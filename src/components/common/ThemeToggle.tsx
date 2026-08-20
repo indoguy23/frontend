@@ -1,59 +1,40 @@
-import { Check, Monitor, Moon, Sun, type LucideIcon } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
-import { THEME_OPTIONS } from "@/constants/theme";
 import useTheme from "@/hooks/useTheme";
-import type { ThemeMode } from "@/types/theme";
-
-const themeIcons: Record<ThemeMode, LucideIcon> = {
-  light: Sun,
-  dark: Moon,
-  system: Monitor,
-};
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
 
+  const isDark = theme === "dark";
+
+  const handleToggleTheme = () => {
+    setTheme(isDark ? "light" : "dark");
+  };
+
   return (
-    <div
-      className="inline-flex rounded-xl border border-border bg-card p-1"
-      role="group"
-      aria-label="Choose color theme"
+    <button
+      type="button"
+      onClick={handleToggleTheme}
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      title={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      className={[
+        "inline-flex h-10 w-10 items-center justify-center",
+        "rounded-full border border-border",
+        "bg-card text-foreground",
+        "transition-all duration-200",
+        "hover:bg-muted",
+        "focus-visible:outline-none",
+        "focus-visible:ring-2 focus-visible:ring-ring",
+        "focus-visible:ring-offset-2",
+        "focus-visible:ring-offset-background",
+      ].join(" ")}
     >
-      {THEME_OPTIONS.map((option) => {
-        const Icon = themeIcons[option.value];
-        const isActive = theme === option.value;
-
-        return (
-          <button
-            key={option.value}
-            type="button"
-            onClick={() => setTheme(option.value)}
-            aria-label={`Use ${option.label.toLowerCase()} theme`}
-            aria-pressed={isActive}
-            title={`${option.label} theme`}
-            className={[
-              "relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg px-3",
-              "transition-colors duration-200",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              isActive
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-            ].join(" ")}
-          >
-            <Icon aria-hidden="true" className="h-4 w-4" />
-
-            <span className="sr-only">{option.label}</span>
-
-            {isActive && (
-              <Check
-                aria-hidden="true"
-                className="absolute right-1 top-1 h-3 w-3"
-              />
-            )}
-          </button>
-        );
-      })}
-    </div>
+      {isDark ? (
+        <Sun aria-hidden="true" className="h-5 w-5" />
+      ) : (
+        <Moon aria-hidden="true" className="h-5 w-5" />
+      )}
+    </button>
   );
 };
 
