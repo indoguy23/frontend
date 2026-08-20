@@ -60,6 +60,7 @@ import {
   SidebarPlayground,
   SkeletonPlayground,
   SortControlPlayground,
+  SpotlightCarouselPlayground,
   StatCardPlayground,
   StatusBadgePlayground,
   StepIndicatorPlayground,
@@ -131,6 +132,7 @@ const DesignSystemPage = () => {
         <DataListPlayground />
         <MetricPlayground />
         <HeroBannerPlayground />
+        <SpotlightCarouselPlayground />
         <PromoCardPlayground />
         <ContentRailPlayground />
         <ProductCardPlayground />
