@@ -4,12 +4,12 @@ export const heroSectionStyles = {
   container: [
     "mx-auto grid w-full max-w-7xl",
     "items-center gap-8",
-    "px-4 py-10",
-    "sm:px-6 sm:py-14",
+    "px-4 pt-10 pb-6",
+    "sm:px-6 sm:pt-14 sm:pb-10",
     "lg:grid-cols-2",
     "lg:gap-12",
     "lg:px-8",
-    "lg:py-20",
+    "lg:pt-20 lg:pb-12",
   ].join(" "),
 
   content: ["order-2", "lg:order-1"].join(" "),
