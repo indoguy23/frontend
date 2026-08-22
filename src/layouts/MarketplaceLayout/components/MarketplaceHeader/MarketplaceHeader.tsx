@@ -6,8 +6,10 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 import Button from "@/components/ui/Button";
 
 import { marketplaceHeaderStyles } from "./MarketplaceHeader.styles";
+import MobileNavigation from "../MobileNavigation";
 
 const MarketplaceHeader = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   return (
     <header className={marketplaceHeaderStyles.root}>
@@ -21,6 +23,7 @@ const MarketplaceHeader = () => {
               variant="ghost"
               aria-label="Open navigation menu"
               className="rounded-full"
+              onClick={() => setMobileMenuOpen(true)}
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -117,6 +120,11 @@ const MarketplaceHeader = () => {
             <ThemeToggle />
           </div>
         </div>
+
+        <MobileNavigation
+          open={mobileMenuOpen}
+          onOpenChange={setMobileMenuOpen}
+        />
       </div>
     </header>
   );
