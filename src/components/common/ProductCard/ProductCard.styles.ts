@@ -1,6 +1,7 @@
 export const productCardStyles = {
   card: [
     "group overflow-hidden",
+    "flex h-full min-w-0 flex-col",
     "rounded-2xl border border-border",
     "bg-card text-card-foreground",
     "transition-all duration-300",
@@ -8,7 +9,7 @@ export const productCardStyles = {
     "hover:shadow-lg",
   ].join(" "),
 
-  imageWrapper: ["relative aspect-square overflow-hidden", "bg-muted"].join(
+  imageWrapper: ["relative overflow-hidden", "aspect-[4/3]", "bg-muted"].join(
     " ",
   ),
 
@@ -25,7 +26,7 @@ export const productCardStyles = {
 
   wishlistButton: [
     "absolute right-3 top-3",
-    "inline-flex h-9 w-9 items-center justify-center",
+    "inline-flex h-8 w-8 items-center justify-center",
     "rounded-full border border-border",
     "bg-background/90",
     "text-muted-foreground",
@@ -36,24 +37,31 @@ export const productCardStyles = {
     "focus-visible:ring-2 focus-visible:ring-ring",
   ].join(" "),
 
-  content: "p-4",
+  content: ["flex min-w-0 flex-1 flex-col", "p-3.5"].join(" "),
 
   category: [
-    "text-xs font-medium uppercase tracking-wide",
+    "truncate",
+    "text-[11px] font-medium uppercase tracking-wide",
     "text-muted-foreground",
   ].join(" "),
 
-  title: ["mt-2 line-clamp-2", "text-base font-semibold text-foreground"].join(
-    " ",
-  ),
+  title: [
+    "mt-1.5",
+    "line-clamp-2",
+    "min-h-10",
+    "break-words",
+    "text-sm font-semibold",
+    "leading-5",
+    "text-foreground",
+  ].join(" "),
 
-  ratingRow: ["mt-3 flex items-center gap-2", "text-sm"].join(" "),
+  ratingRow: ["mt-2 flex items-center gap-2", "text-sm"].join(" "),
 
-  priceRow: ["mt-4 flex flex-wrap items-center gap-2"].join(" "),
+  priceRow: ["mt-2 flex flex-wrap items-center gap-2"].join(" "),
 
-  price: ["text-lg font-bold", "text-foreground"].join(" "),
+  price: ["text-base font-bold", "text-foreground"].join(" "),
 
-  originalPrice: ["text-sm text-muted-foreground", "line-through"].join(" "),
+  originalPrice: ["text-xs text-muted-foreground", "line-through"].join(" "),
 
-  footer: ["mt-4 flex items-center gap-2"].join(" "),
+  footer: ["mt-auto flex items-center gap-2", "pt-3"].join(" "),
 };
