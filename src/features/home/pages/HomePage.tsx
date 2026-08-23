@@ -1,5 +1,5 @@
+import CategorySection from "../components/CategorySection";
 import HeroSection from "../components/HeroSection";
-import CategorySection from "../components/HeroSection/CategorySection";
 
 const HomePage = () => {
   return (
