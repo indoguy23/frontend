@@ -1,12 +1,15 @@
 import { useState } from "react";
-import PriceDisplay from "@/components/common/PriceDisplay";
+
 import { Heart, ImageOff, ShoppingCart } from "lucide-react";
+
+import PriceDisplay from "@/components/common/PriceDisplay";
 import RatingDisplay from "@/components/common/RatingDisplay";
+import StockBadge from "@/components/common/StockBadge";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Skeleton from "@/components/ui/Skeleton";
 import { cn } from "@/utils/cn";
-import StockBadge from "@/components/common/StockBadge";
+
 import { productCardStyles } from "./ProductCard.styles";
 import type { ProductCardProps } from "./ProductCard.types";
 
@@ -40,8 +43,11 @@ const ProductCard = ({
 
         <div className="space-y-4 p-4">
           <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-5 w-full" />
-          <Skeleton className="h-5 w-3/4" />
+
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-3/4" />
+          </div>
 
           <div className="flex gap-2">
             <Skeleton className="h-6 w-20" />
@@ -55,7 +61,13 @@ const ProductCard = ({
   }
 
   return (
-    <article className={cn(productCardStyles.card, className)}>
+    <article
+      className={cn(
+        productCardStyles.card,
+        "flex h-full min-w-0 flex-col",
+        className,
+      )}
+    >
       <div className={productCardStyles.imageWrapper}>
         {imageError ? (
           <div className={productCardStyles.imageFallback}>
@@ -105,37 +117,49 @@ const ProductCard = ({
         </div>
       </div>
 
-      <div className={productCardStyles.content}>
+      <div
+        className={cn(
+          productCardStyles.content,
+          "flex min-w-0 flex-1 flex-col",
+        )}
+      >
         <p className={productCardStyles.category}>{product.category}</p>
 
         <button
           type="button"
-          className="block w-full text-left"
+          className="mt-1 block min-w-0 w-full text-left"
           onClick={() => onViewDetails?.(product)}
         >
-          <h3 className={productCardStyles.title}>{product.name}</h3>
+          <h3
+            className={cn(
+              productCardStyles.title,
+              "line-clamp-2 min-h-12 break-words leading-6",
+            )}
+          >
+            {product.name}
+          </h3>
         </button>
 
-        {typeof product.rating === "number" && (
-          <RatingDisplay
-            rating={product.rating}
-            reviewCount={product.reviewCount}
-            size="sm"
+        <div className="mt-3 space-y-3">
+          {typeof product.rating === "number" && (
+            <RatingDisplay
+              rating={product.rating}
+              reviewCount={product.reviewCount}
+              size="sm"
+            />
+          )}
+
+          <PriceDisplay
+            price={product.price}
+            originalPrice={product.originalPrice}
           />
-        )}
 
-        <PriceDisplay
-          price={product.price}
-          originalPrice={product.originalPrice}
-        />
-
-        <div className="mt-3">
           <StockBadge stock={product.stock} showQuantity={false} />
         </div>
 
-        <div className={productCardStyles.footer}>
+        <div className={cn(productCardStyles.footer, "mt-auto pt-4")}>
           <Button
-            className="flex-1"
+            className="w-full"
             disabled={isOutOfStock}
             leftIcon={<ShoppingCart className="h-4 w-4" />}
             onClick={() => onAddToCart?.(product)}
