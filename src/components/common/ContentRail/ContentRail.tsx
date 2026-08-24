@@ -1,4 +1,5 @@
-import { Children, useRef } from "react";
+import { Children, useEffect, useRef, useState } from "react";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import Button from "@/components/ui/Button";
@@ -12,9 +13,13 @@ const ContentRail = ({
   gap = "md",
   itemWidth = "280px",
   showControls = true,
+  autoScroll = false,
+  autoScrollInterval = 3000,
   className,
 }: ContentRailProps) => {
   const viewportRef = useRef<HTMLDivElement>(null);
+
+  const [isPaused, setIsPaused] = useState(false);
 
   const gapClass = {
     sm: contentRailStyles.gapSm,
@@ -37,8 +42,47 @@ const ContentRail = ({
     });
   };
 
+  useEffect(() => {
+    if (!autoScroll || isPaused) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      const viewport = viewportRef.current;
+
+      if (!viewport) {
+        return;
+      }
+
+      const reachedEnd =
+        viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 5;
+
+      if (reachedEnd) {
+        viewport.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+
+        return;
+      }
+
+      viewport.scrollBy({
+        left: viewport.clientWidth * 0.8,
+        behavior: "smooth",
+      });
+    }, autoScrollInterval);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [autoScroll, autoScrollInterval, isPaused]);
+
   return (
-    <div className={cn(contentRailStyles.root, className)}>
+    <div
+      className={cn(contentRailStyles.root, className)}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       {showControls && (
         <div className={contentRailStyles.controls}>
           <Button

@@ -9,5 +9,9 @@ export interface ContentRailProps {
 
   showControls?: boolean;
 
+  autoScroll?: boolean;
+
+  autoScrollInterval?: number;
+
   className?: string;
 }
