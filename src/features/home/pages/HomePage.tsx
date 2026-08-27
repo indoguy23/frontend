@@ -2,6 +2,7 @@ import CategorySection from "../components/CategorySection";
 import DealsSection from "../components/DealsSection";
 import FeaturedProductsSection from "../components/FeaturedProductsSection";
 import HeroSection from "../components/HeroSection";
+import NewArrivalsSection from "../components/NewArrivalsSection";
 import SpotlightSection from "../components/SpotlightSection";
 
 const HomePage = () => {
@@ -12,6 +13,7 @@ const HomePage = () => {
       <FeaturedProductsSection />
       <SpotlightSection />
       <DealsSection />
+      <NewArrivalsSection />
     </>
   );
 };
