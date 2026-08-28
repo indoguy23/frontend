@@ -22,13 +22,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
-      - name: Check versions
+      - name: Setup npm
+        run: npm install --global npm@11.6.2
+
+      # TEMPORARY DEBUG STEP
+      - name: Debug dependency environment
         run: |
+          echo "Node:"
           node --version
+          echo "npm:"
           npm --version
+          echo "Lockfile version:"
+          node -p "require('./package-lock.json').lockfileVersion"
+          echo "Package:"
+          node -p "require('./package.json').name"
 
       - name: Install dependencies
         run: npm ci
