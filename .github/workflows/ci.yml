@@ -34,6 +34,11 @@ jobs:
           echo "Node:"
           node --version
           echo "npm:"
+      - name: Check versions
+        run: |
+          echo "Node version:"
+          node --version
+          echo "npm version:"
           npm --version
           echo "Lockfile version:"
           node -p "require('./package-lock.json').lockfileVersion"

@@ -1,5 +1,5 @@
 import CategorySection from "../components/CategorySection";
-// import CollectionsSection from "../components/CollectionsSection";
+import CollectionsSection from "../components/CollectionsSection";
 import DealsSection from "../components/DealsSection";
 import FeaturedProductsSection from "../components/FeaturedProductsSection";
 import HeroSection from "../components/HeroSection";
