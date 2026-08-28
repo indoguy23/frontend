@@ -18,6 +18,7 @@ const HomePage = () => {
       <NewArrivalsSection />
       <CollectionsSection />
       <TopSellersSection />
+      {/* <CollectionsSection /> */}
     </>
   );
 };
