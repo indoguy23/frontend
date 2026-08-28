@@ -5,6 +5,7 @@ import FeaturedProductsSection from "../components/FeaturedProductsSection";
 import HeroSection from "../components/HeroSection";
 import NewArrivalsSection from "../components/NewArrivalsSection";
 import SpotlightSection from "../components/SpotlightSection";
+import { TopSellersSection } from "../components/TopSellersSection";
 
 const HomePage = () => {
   return (
@@ -16,6 +17,7 @@ const HomePage = () => {
       <DealsSection />
       <NewArrivalsSection />
       <CollectionsSection />
+      <TopSellersSection />
     </>
   );
 };
