@@ -1,8 +1,9 @@
 import CategorySection from "../components/CategorySection";
-// import CollectionsSection from "../components/CollectionsSection";
+import CollectionsSection from "../components/CollectionsSection";
 import DealsSection from "../components/DealsSection";
 import FeaturedProductsSection from "../components/FeaturedProductsSection";
 import HeroSection from "../components/HeroSection";
+import { MarketplaceBenefits } from "../components/MarketplaceBenefits";
 import NewArrivalsSection from "../components/NewArrivalsSection";
 import SpotlightSection from "../components/SpotlightSection";
 import { TopSellersSection } from "../components/TopSellersSection";
@@ -18,7 +19,7 @@ const HomePage = () => {
       <NewArrivalsSection />
       <CollectionsSection />
       <TopSellersSection />
-      {/* <CollectionsSection /> */}
+      <MarketplaceBenefits />
     </>
   );
 };
