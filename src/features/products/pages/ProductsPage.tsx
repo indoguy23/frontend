@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ProductsHeader } from "../components/ProductsHeader";
 import {
@@ -6,8 +6,13 @@ import {
   type ProductSortValue,
 } from "../components/ProductsToolbar";
 import { ProductFilters } from "../components/ProductFilters";
+import { ProductsGrid } from "../components/ProductsGrid";
+
+import { PRODUCTS } from "../data/products.data";
 
 import type { ProductFiltersState } from "../types/products.types";
+import Dialog from "@/components/ui/Dialog";
+import Button from "@/components/ui/Button";
 
 const INITIAL_FILTERS: ProductFiltersState = {
   categories: [],
@@ -22,10 +27,87 @@ const ProductsPage = () => {
 
   const [filters, setFilters] = useState<ProductFiltersState>(INITIAL_FILTERS);
 
-  const productCount = 128;
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const filteredProducts = useMemo(() => {
+    let result = [...PRODUCTS];
+
+    // Category
+    if (filters.categories.length > 0) {
+      result = result.filter((product) =>
+        filters.categories.includes(product.category),
+      );
+    }
+
+    // Minimum Price
+    if (filters.minPrice !== "") {
+      const minPrice = Number(filters.minPrice);
+
+      result = result.filter((product) => product.price >= minPrice);
+    }
+
+    // Maximum Price
+    if (filters.maxPrice !== "") {
+      const maxPrice = Number(filters.maxPrice);
+
+      result = result.filter((product) => product.price <= maxPrice);
+    }
+
+    // Rating
+    if (filters.rating !== null) {
+      const minimumRating = filters.rating;
+
+      result = result.filter(
+        (product) => (product.rating ?? 0) >= minimumRating,
+      );
+    }
+
+    // Availability
+    if (filters.availability.length > 0) {
+      result = result.filter((product) => {
+        const isInStock = product.stock > 0;
+
+        const matchesInStock =
+          filters.availability.includes("in-stock") && isInStock;
+
+        const matchesOutOfStock =
+          filters.availability.includes("out-of-stock") && !isInStock;
+
+        return matchesInStock || matchesOutOfStock;
+      });
+    }
+
+    // Sorting
+    switch (sortBy) {
+      case "newest":
+        result.reverse();
+        break;
+
+      case "price-low-high":
+        result.sort((a, b) => a.price - b.price);
+        break;
+
+      case "price-high-low":
+        result.sort((a, b) => b.price - a.price);
+        break;
+
+      case "rating":
+        result.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        break;
+
+      case "featured":
+      default:
+        result.sort(
+          (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)),
+        );
+        break;
+    }
+
+    return result;
+  }, [filters, sortBy]);
 
   const handleFilterClick = () => {
-    // Mobile/tablet filter dialog will be connected later.
+    setIsFilterOpen(true);
   };
 
   const handleClearFilters = () => {
@@ -46,7 +128,7 @@ const ProductsPage = () => {
           "lg:px-8",
         ].join(" ")}
       >
-        <ProductsHeader productCount={productCount} />
+        <ProductsHeader productCount={filteredProducts.length} />
 
         <ProductsToolbar
           sortBy={sortBy}
@@ -64,14 +146,47 @@ const ProductsPage = () => {
             />
           </aside>
 
-          {/* Product Grid */}
+          {/* Products */}
           <section className="min-w-0">
-            {/* ProductsGrid will be added next */}
+            <ProductsGrid products={filteredProducts} />
           </section>
         </div>
-
-        {/* Pagination will be added later */}
       </div>
+
+      {/* Mobile / Tablet Filters */}
+      <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+        <Dialog.Content size="md">
+          <Dialog.Header>
+            <Dialog.Title>Filter Products</Dialog.Title>
+
+            <Dialog.Description>
+              Narrow down products based on your preferences.
+            </Dialog.Description>
+          </Dialog.Header>
+
+          <Dialog.Body>
+            <ProductFilters
+              filters={filters}
+              onChange={setFilters}
+              onClear={handleClearFilters}
+            />
+          </Dialog.Body>
+
+          <Dialog.Footer>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClearFilters}
+            >
+              Clear
+            </Button>
+
+            <Button type="button" onClick={() => setIsFilterOpen(false)}>
+              Show {filteredProducts.length} products
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog>
     </main>
   );
 };
