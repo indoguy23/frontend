@@ -1,10 +1,11 @@
-import ProductCard from "@/components/common/ProductCard";
+import { useNavigate } from "react-router-dom";
 
+import ProductCard from "@/components/common/ProductCard";
 import type { ProductCardData } from "@/components/common/ProductCard";
+import Button from "@/components/ui/Button";
+import EmptyState from "@/components/ui/EmptyState";
 
 import { productsGridStyles } from "./ProductsGrid.styles";
-import EmptyState from "@/components/ui/EmptyState";
-import Button from "@/components/ui/Button";
 
 interface ProductsGridProps {
   products: ProductCardData[];
@@ -12,6 +13,12 @@ interface ProductsGridProps {
 }
 
 const ProductsGrid = ({ products, onClearFilters }: ProductsGridProps) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = (product: ProductCardData) => {
+    navigate(`/products/${product.slug}`);
+  };
+
   if (products.length === 0) {
     return (
       <EmptyState
@@ -31,7 +38,11 @@ const ProductsGrid = ({ products, onClearFilters }: ProductsGridProps) => {
   return (
     <div className={productsGridStyles.root}>
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard
+          key={product.id}
+          product={product}
+          onViewDetails={handleViewDetails}
+        />
       ))}
     </div>
   );

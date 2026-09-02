@@ -10,6 +10,7 @@ import DesignSystemPage from "@/features/design-system/pages/DesignSystemPage";
 import MarketplaceLayout from "@/layouts/MarketplaceLayout";
 
 import { ROUTES } from "./route";
+import ProductDetailsPage from "@/features/products/pages/ProductDetailsPage";
 
 const AppRouter = () => {
   return (
@@ -19,6 +20,8 @@ const AppRouter = () => {
         <Route path={ROUTES.HOME} element={<HomePage />} />
 
         <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+
+        <Route path={ROUTES.PRODUCT_DETAILS} element={<ProductDetailsPage />} />
 
         <Route path={ROUTES.CART} element={<CartPage />} />
       </Route>
