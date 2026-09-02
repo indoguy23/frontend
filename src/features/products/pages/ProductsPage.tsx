@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ProductsHeader } from "../components/ProductsHeader";
 import {
@@ -119,16 +119,23 @@ const ProductsPage = () => {
     return filteredProducts.slice(startIndex, endIndex);
   }, [filteredProducts, currentPage]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters, sortBy]);
-
   const handleFilterClick = () => {
     setIsFilterOpen(true);
   };
 
+  const handleFiltersChange = (updatedFilters: ProductFiltersState) => {
+    setFilters(updatedFilters);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (value: ProductSortValue) => {
+    setSortBy(value);
+    setCurrentPage(1);
+  };
+
   const handleClearFilters = () => {
     setFilters(INITIAL_FILTERS);
+    setCurrentPage(1);
   };
 
   return (
@@ -149,7 +156,7 @@ const ProductsPage = () => {
 
         <ProductsToolbar
           sortBy={sortBy}
-          onSortChange={setSortBy}
+          onSortChange={handleSortChange}
           onFilterClick={handleFilterClick}
         />
 
@@ -158,7 +165,7 @@ const ProductsPage = () => {
           <aside className="hidden lg:block">
             <ProductFilters
               filters={filters}
-              onChange={setFilters}
+              onChange={handleFiltersChange}
               onClear={handleClearFilters}
             />
           </aside>
@@ -195,7 +202,7 @@ const ProductsPage = () => {
           <Dialog.Body>
             <ProductFilters
               filters={filters}
-              onChange={setFilters}
+              onChange={handleFiltersChange}
               onClear={handleClearFilters}
             />
           </Dialog.Body>
