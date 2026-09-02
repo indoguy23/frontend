@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
 
+import Dialog from "@/components/ui/Dialog";
+import Button from "@/components/ui/Button";
+
 import { ProductsHeader } from "../components/ProductsHeader";
 import {
   ProductsToolbar,
@@ -7,13 +10,11 @@ import {
 } from "../components/ProductsToolbar";
 import { ProductFilters } from "../components/ProductFilters";
 import { ProductsGrid } from "../components/ProductsGrid";
+import { ProductsPagination } from "../components/ProductsPagination";
 
 import { PRODUCTS } from "../data/products.data";
 
 import type { ProductFiltersState } from "../types/products.types";
-import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
-import { ProductsPagination } from "../components/ProductsPagination";
 
 const INITIAL_FILTERS: ProductFiltersState = {
   categories: [],
@@ -23,6 +24,8 @@ const INITIAL_FILTERS: ProductFiltersState = {
   availability: [],
 };
 
+const PRODUCTS_PER_PAGE = 6;
+
 const ProductsPage = () => {
   const [sortBy, setSortBy] = useState<ProductSortValue>("featured");
 
@@ -31,8 +34,6 @@ const ProductsPage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-
-  const PRODUCT_PER_PAGE = 6;
 
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
@@ -111,11 +112,13 @@ const ProductsPage = () => {
     return result;
   }, [filters, sortBy]);
 
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCT_PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
 
   const paginatedProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * PRODUCT_PER_PAGE;
-    const endIndex = startIndex + PRODUCT_PER_PAGE;
+    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+
+    const endIndex = startIndex + PRODUCTS_PER_PAGE;
+
     return filteredProducts.slice(startIndex, endIndex);
   }, [filteredProducts, currentPage]);
 
@@ -181,7 +184,7 @@ const ProductsPage = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               totalItems={filteredProducts.length}
-              pageSize={PRODUCT_PER_PAGE}
+              pageSize={PRODUCTS_PER_PAGE}
               onPageChange={setCurrentPage}
             />
           </section>
@@ -202,7 +205,7 @@ const ProductsPage = () => {
           <Dialog.Body>
             <ProductFilters
               filters={filters}
-              onChange={setFilters}
+              onChange={handleFiltersChange}
               onClear={handleClearFilters}
             />
           </Dialog.Body>
