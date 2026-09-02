@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ProductsHeader } from "../components/ProductsHeader";
 import {
@@ -13,6 +13,7 @@ import { PRODUCTS } from "../data/products.data";
 import type { ProductFiltersState } from "../types/products.types";
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
+import { ProductsPagination } from "../components/ProductsPagination";
 
 const INITIAL_FILTERS: ProductFiltersState = {
   categories: [],
@@ -28,6 +29,10 @@ const ProductsPage = () => {
   const [filters, setFilters] = useState<ProductFiltersState>(INITIAL_FILTERS);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const PRODUCT_PER_PAGE = 6;
 
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
@@ -106,6 +111,18 @@ const ProductsPage = () => {
     return result;
   }, [filters, sortBy]);
 
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCT_PER_PAGE);
+
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * PRODUCT_PER_PAGE;
+    const endIndex = startIndex + PRODUCT_PER_PAGE;
+    return filteredProducts.slice(startIndex, endIndex);
+  }, [filteredProducts, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, sortBy]);
+
   const handleFilterClick = () => {
     setIsFilterOpen(true);
   };
@@ -148,7 +165,18 @@ const ProductsPage = () => {
 
           {/* Products */}
           <section className="min-w-0">
-            <ProductsGrid products={filteredProducts} />
+            <ProductsGrid
+              products={paginatedProducts}
+              onClearFilters={handleClearFilters}
+            />
+
+            <ProductsPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredProducts.length}
+              pageSize={PRODUCT_PER_PAGE}
+              onPageChange={setCurrentPage}
+            />
           </section>
         </div>
       </div>
