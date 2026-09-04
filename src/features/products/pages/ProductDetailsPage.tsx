@@ -2,6 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
 
+import { ProductGallery } from "../components/ProductDetails/ProductGallery";
+import { ProductInfo } from "../components/ProductDetails/ProductInfo";
 import { PRODUCTS } from "../data/products.data";
 
 const ProductDetailsPage = () => {
@@ -32,16 +34,48 @@ const ProductDetailsPage = () => {
     );
   }
 
+  const galleryImages =
+    product.images.length > 0 ? product.images : [product.image];
+
   return (
     <main className="min-h-screen">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <p className="text-sm text-muted-foreground">{product.category}</p>
+        {/* Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb"
+          className="mb-6 flex items-center gap-2 text-sm text-muted-foreground"
+        >
+          <button
+            type="button"
+            className="transition-colors hover:text-foreground"
+            onClick={() => navigate("/")}
+          >
+            Home
+          </button>
 
-        <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">
-          {product.name}
-        </h1>
+          <span aria-hidden="true">/</span>
 
-        <p className="mt-4">{product.description}</p>
+          <button
+            type="button"
+            className="transition-colors hover:text-foreground"
+            onClick={() => navigate("/products")}
+          >
+            Products
+          </button>
+
+          <span aria-hidden="true">/</span>
+
+          <span className="truncate text-foreground" aria-current="page">
+            {product.name}
+          </span>
+        </nav>
+
+        {/* Main Product Details */}
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <ProductGallery images={galleryImages} productName={product.name} />
+
+          <ProductInfo product={product} />
+        </div>
       </div>
     </main>
   );
