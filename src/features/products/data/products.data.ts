@@ -1,6 +1,6 @@
-import type { ProductCardData } from "@/components/common/ProductCard";
+import type { ProductDetailsData } from "../types/products.types";
 
-export const PRODUCTS: ProductCardData[] = [
+export const PRODUCTS: ProductDetailsData[] = [
   {
     id: "product-1",
     name: "Wireless Noise Cancelling Headphones",
@@ -13,6 +13,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 328,
     stock: 18,
     featured: true,
+    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e"],
+    description:
+      "Enjoy immersive sound and clear calls with comfortable wireless noise cancelling headphones.",
+    specifications: [
+      { label: "Connectivity", value: "Bluetooth 5.3" },
+      { label: "Battery life", value: "30 hours" },
+    ],
+    seller: {
+      id: "seller-1",
+      name: "Audio House",
+      slug: "audio-house",
+      rating: 4.8,
+      verified: true,
+      location: "Mumbai",
+    },
   },
   {
     id: "product-2",
@@ -26,6 +41,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 214,
     stock: 24,
     featured: true,
+    images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30"],
+    description:
+      "Track your fitness, messages, and daily routines with this premium smart watch.",
+    specifications: [
+      { label: "Display", value: "AMOLED" },
+      { label: "Water resistance", value: "5 ATM" },
+    ],
+    seller: {
+      id: "seller-2",
+      name: "Tech Central",
+      slug: "tech-central",
+      rating: 4.7,
+      verified: true,
+      location: "Bengaluru",
+    },
   },
   {
     id: "product-3",
@@ -39,6 +69,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 189,
     stock: 12,
     featured: false,
+    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"],
+    description:
+      "A versatile everyday sneaker with a classic silhouette and cushioned comfort.",
+    specifications: [
+      { label: "Material", value: "Textile and rubber" },
+      { label: "Fit", value: "Regular" },
+    ],
+    seller: {
+      id: "seller-3",
+      name: "Stride Studio",
+      slug: "stride-studio",
+      rating: 4.6,
+      verified: true,
+      location: "Delhi",
+    },
   },
   {
     id: "product-4",
@@ -51,6 +96,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 96,
     stock: 8,
     featured: false,
+    images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c"],
+    description:
+      "Add a warm, modern glow to your space with this minimalist table lamp.",
+    specifications: [
+      { label: "Bulb type", value: "LED" },
+      { label: "Material", value: "Metal and glass" },
+    ],
+    seller: {
+      id: "seller-4",
+      name: "Home Form",
+      slug: "home-form",
+      rating: 4.5,
+      verified: true,
+      location: "Pune",
+    },
   },
   {
     id: "product-5",
@@ -64,6 +124,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 143,
     stock: 16,
     featured: true,
+    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"],
+    description:
+      "Lightweight running shoes designed to support comfortable daily training.",
+    specifications: [
+      { label: "Use", value: "Road running" },
+      { label: "Sole", value: "Rubber" },
+    ],
+    seller: {
+      id: "seller-5",
+      name: "Active Supply",
+      slug: "active-supply",
+      rating: 4.6,
+      verified: true,
+      location: "Hyderabad",
+    },
   },
   {
     id: "product-6",
@@ -76,6 +151,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 87,
     stock: 0,
     featured: false,
+    images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62"],
+    description:
+      "Carry your daily essentials in a clean, durable backpack made for city life.",
+    specifications: [
+      { label: "Capacity", value: "20 litres" },
+      { label: "Closure", value: "Zipper" },
+    ],
+    seller: {
+      id: "seller-6",
+      name: "Carry Co.",
+      slug: "carry-co",
+      rating: 4.4,
+      verified: false,
+      location: "Chennai",
+    },
   },
   {
     id: "product-7",
@@ -89,6 +179,21 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 122,
     stock: 20,
     featured: false,
+    images: ["https://images.unsplash.com/photo-1556228578-8c89e6adf883"],
+    description:
+      "A simple collection of skincare essentials for a fresh and balanced routine.",
+    specifications: [
+      { label: "Skin type", value: "All skin types" },
+      { label: "Items", value: "3" },
+    ],
+    seller: {
+      id: "seller-7",
+      name: "Glow Market",
+      slug: "glow-market",
+      rating: 4.6,
+      verified: true,
+      location: "Kolkata",
+    },
   },
   {
     id: "product-8",
@@ -102,5 +207,20 @@ export const PRODUCTS: ProductCardData[] = [
     reviewCount: 542,
     stock: 35,
     featured: true,
+    images: ["https://images.unsplash.com/photo-1544947950-fa07a98d237f"],
+    description:
+      "A practical guide to building better habits through small, consistent changes.",
+    specifications: [
+      { label: "Format", value: "Paperback" },
+      { label: "Language", value: "English" },
+    ],
+    seller: {
+      id: "seller-8",
+      name: "Page Turners",
+      slug: "page-turners",
+      rating: 4.9,
+      verified: true,
+      location: "Jaipur",
+    },
   },
 ];
