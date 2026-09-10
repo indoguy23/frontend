@@ -13,13 +13,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 328,
     stock: 18,
     featured: true,
-    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e"],
+
+    images: [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944",
+      "https://images.unsplash.com/photo-1583394838336-acd977736f90",
+    ],
+
     description:
       "Enjoy immersive sound and clear calls with comfortable wireless noise cancelling headphones.",
+
     specifications: [
       { label: "Connectivity", value: "Bluetooth 5.3" },
       { label: "Battery life", value: "30 hours" },
     ],
+
     seller: {
       id: "seller-1",
       name: "Audio House",
@@ -29,6 +37,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Mumbai",
     },
   },
+
   {
     id: "product-2",
     name: "Premium Smart Watch",
@@ -41,13 +50,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 214,
     stock: 24,
     featured: true,
-    images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30"],
+
+    images: [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+      "https://images.unsplash.com/photo-1546868871-7041f2a55e12",
+      "https://images.unsplash.com/photo-1551816230-ef5deaed4a26",
+    ],
+
     description:
       "Track your fitness, messages, and daily routines with this premium smart watch.",
+
     specifications: [
       { label: "Display", value: "AMOLED" },
       { label: "Water resistance", value: "5 ATM" },
     ],
+
     seller: {
       id: "seller-2",
       name: "Tech Central",
@@ -57,6 +74,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Bengaluru",
     },
   },
+
   {
     id: "product-3",
     name: "Classic Everyday Sneakers",
@@ -69,13 +87,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 189,
     stock: 12,
     featured: false,
-    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"],
+
+    images: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772",
+      "https://images.unsplash.com/photo-1607522370275-f14206abe5d3",
+    ],
+
     description:
       "A versatile everyday sneaker with a classic silhouette and cushioned comfort.",
+
     specifications: [
       { label: "Material", value: "Textile and rubber" },
       { label: "Fit", value: "Regular" },
     ],
+
     seller: {
       id: "seller-3",
       name: "Stride Studio",
@@ -85,6 +111,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Delhi",
     },
   },
+
   {
     id: "product-4",
     name: "Modern Table Lamp",
@@ -96,13 +123,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 96,
     stock: 8,
     featured: false,
-    images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c"],
+
+    images: [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c",
+      "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15",
+      "https://images.unsplash.com/photo-1540932239986-30128078f3c5",
+    ],
+
     description:
       "Add a warm, modern glow to your space with this minimalist table lamp.",
+
     specifications: [
       { label: "Bulb type", value: "LED" },
       { label: "Material", value: "Metal and glass" },
     ],
+
     seller: {
       id: "seller-4",
       name: "Home Form",
@@ -112,6 +147,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Pune",
     },
   },
+
   {
     id: "product-5",
     name: "Running Shoes",
@@ -124,13 +160,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 143,
     stock: 16,
     featured: true,
-    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"],
+
+    images: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+      "https://images.unsplash.com/photo-1460353581641-37baddab0fa2",
+      "https://images.unsplash.com/photo-1608231387042-66d1773070a5",
+    ],
+
     description:
       "Lightweight running shoes designed to support comfortable daily training.",
+
     specifications: [
       { label: "Use", value: "Road running" },
       { label: "Sole", value: "Rubber" },
     ],
+
     seller: {
       id: "seller-5",
       name: "Active Supply",
@@ -140,6 +184,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Hyderabad",
     },
   },
+
   {
     id: "product-6",
     name: "Minimal Backpack",
@@ -151,13 +196,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 87,
     stock: 0,
     featured: false,
-    images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62"],
+
+    images: [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
+      "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3",
+      "https://images.unsplash.com/photo-1581605405669-fcdf81165afa",
+    ],
+
     description:
       "Carry your daily essentials in a clean, durable backpack made for city life.",
+
     specifications: [
       { label: "Capacity", value: "20 litres" },
       { label: "Closure", value: "Zipper" },
     ],
+
     seller: {
       id: "seller-6",
       name: "Carry Co.",
@@ -167,6 +220,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Chennai",
     },
   },
+
   {
     id: "product-7",
     name: "Skin Care Essentials Set",
@@ -179,13 +233,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 122,
     stock: 20,
     featured: false,
-    images: ["https://images.unsplash.com/photo-1556228578-8c89e6adf883"],
+
+    images: [
+      "https://images.unsplash.com/photo-1556228578-8c89e6adf883",
+      "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd",
+      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908",
+    ],
+
     description:
       "A simple collection of skincare essentials for a fresh and balanced routine.",
+
     specifications: [
       { label: "Skin type", value: "All skin types" },
       { label: "Items", value: "3" },
     ],
+
     seller: {
       id: "seller-7",
       name: "Glow Market",
@@ -195,6 +257,7 @@ export const PRODUCTS: ProductDetailsData[] = [
       location: "Kolkata",
     },
   },
+
   {
     id: "product-8",
     name: "Atomic Habits",
@@ -207,13 +270,21 @@ export const PRODUCTS: ProductDetailsData[] = [
     reviewCount: 542,
     stock: 35,
     featured: true,
-    images: ["https://images.unsplash.com/photo-1544947950-fa07a98d237f"],
+
+    images: [
+      "https://images.unsplash.com/photo-1544947950-fa07a98d237f",
+      "https://images.unsplash.com/photo-1543002588-bfa74002ed7e",
+      "https://images.unsplash.com/photo-1512820790803-83ca734da794",
+    ],
+
     description:
       "A practical guide to building better habits through small, consistent changes.",
+
     specifications: [
       { label: "Format", value: "Paperback" },
       { label: "Language", value: "English" },
     ],
+
     seller: {
       id: "seller-8",
       name: "Page Turners",
