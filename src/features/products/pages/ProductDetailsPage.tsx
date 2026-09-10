@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import { ProductGallery } from "../components/ProductDetails/ProductGallery";
 import { ProductInfo } from "../components/ProductDetails/ProductInfo";
 import { PRODUCTS } from "../data/products.data";
+import { ProductMeta } from "../components/ProductDetails/ProductMeta";
 
 const ProductDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -80,6 +81,8 @@ const ProductDetailsPage = () => {
 
           <ProductInfo product={product} />
         </div>
+
+        <ProductMeta product={product} />
       </div>
     </main>
   );
