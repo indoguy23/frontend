@@ -72,7 +72,11 @@ const ProductDetailsPage = () => {
 
         {/* Main Product Details */}
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-          <ProductGallery images={galleryImages} productName={product.name} />
+          <ProductGallery
+            key={product.id}
+            images={galleryImages}
+            productName={product.name}
+          />
 
           <ProductInfo product={product} />
         </div>

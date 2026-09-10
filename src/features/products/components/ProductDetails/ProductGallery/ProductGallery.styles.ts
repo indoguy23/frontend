@@ -45,7 +45,14 @@ export const productGalleryStyles = {
     "sm:order-2",
   ].join(" "),
 
-  mainImage: ["aspect-square", "h-full", "w-full", "object-cover"].join(" "),
+  mainImage: [
+    "aspect-square",
+    "h-full",
+    "w-full",
+    "object-contain",
+    "p-6",
+    "sm:p-8",
+  ].join(" "),
 
   fallback: [
     "flex",
