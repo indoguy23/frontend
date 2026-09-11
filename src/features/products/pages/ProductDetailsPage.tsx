@@ -7,10 +7,13 @@ import { ProductInfo } from "../components/ProductDetails/ProductInfo";
 import { PRODUCTS } from "../data/products.data";
 import { ProductMeta } from "../components/ProductDetails/ProductMeta";
 import { RelatedProducts } from "../components/ProductDetails/RelatedProducts";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 const ProductDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+
+  const { addToCart } = useCart();
 
   const product = PRODUCTS.find((item) => item.slug === slug);
 
@@ -80,7 +83,7 @@ const ProductDetailsPage = () => {
             productName={product.name}
           />
 
-          <ProductInfo product={product} />
+          <ProductInfo product={product} onAddToCart={addToCart} />
         </div>
 
         <ProductMeta product={product} />
