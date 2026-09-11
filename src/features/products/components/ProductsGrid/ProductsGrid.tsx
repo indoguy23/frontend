@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 
 import { productsGridStyles } from "./ProductsGrid.styles";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 interface ProductsGridProps {
   products: ProductCardData[];
@@ -14,6 +15,8 @@ interface ProductsGridProps {
 
 const ProductsGrid = ({ products, onClearFilters }: ProductsGridProps) => {
   const navigate = useNavigate();
+
+  const { addToCart } = useCart();
 
   const handleViewDetails = (product: ProductCardData) => {
     navigate(`/products/${product.slug}`);
@@ -42,6 +45,7 @@ const ProductsGrid = ({ products, onClearFilters }: ProductsGridProps) => {
           key={product.id}
           product={product}
           onViewDetails={handleViewDetails}
+          onAddToCart={addToCart}
         />
       ))}
     </div>

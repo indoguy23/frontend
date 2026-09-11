@@ -1,16 +1,27 @@
 import { useState } from "react";
+
 import { Heart, Menu, ShoppingCart, UserRound } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import SearchBar from "@/components/common/SearchBar";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import Button from "@/components/ui/Button";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 import { marketplaceHeaderStyles } from "./MarketplaceHeader.styles";
 import MobileNavigation from "../MobileNavigation";
 
 const MarketplaceHeader = () => {
+  const navigate = useNavigate();
+  const { cartCount } = useCart();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+
+  const handleCartClick = () => {
+    navigate("/cart");
+  };
+
   return (
     <header className={marketplaceHeaderStyles.root}>
       <div className={marketplaceHeaderStyles.container}>
@@ -48,18 +59,26 @@ const MarketplaceHeader = () => {
               type="button"
               size="icon"
               variant="ghost"
-              aria-label="Shopping cart"
+              aria-label={`Shopping cart${
+                cartCount > 0 ? `, ${cartCount} items` : ""
+              }`}
               className={marketplaceHeaderStyles.actionButton}
+              onClick={handleCartClick}
             >
               <ShoppingCart className="h-5 w-5" />
 
-              <span className={marketplaceHeaderStyles.badge}>2</span>
+              {cartCount > 0 && (
+                <span className={marketplaceHeaderStyles.badge}>
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
             </Button>
 
             <ThemeToggle />
           </div>
         </div>
 
+        {/* Mobile Search */}
         <div className={marketplaceHeaderStyles.mobileSearch}>
           <SearchBar
             value={searchValue}
@@ -99,12 +118,19 @@ const MarketplaceHeader = () => {
               type="button"
               size="icon"
               variant="ghost"
-              aria-label="Shopping cart"
+              aria-label={`Shopping cart${
+                cartCount > 0 ? `, ${cartCount} items` : ""
+              }`}
               className={marketplaceHeaderStyles.actionButton}
+              onClick={handleCartClick}
             >
               <ShoppingCart className="h-5 w-5" />
 
-              <span className={marketplaceHeaderStyles.badge}>2</span>
+              {cartCount > 0 && (
+                <span className={marketplaceHeaderStyles.badge}>
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
             </Button>
 
             <Button
