@@ -8,6 +8,7 @@ import ThemeProvider from "./context/ThemeProvider";
 import Tooltip from "@/components/ui/Tooltip";
 import "@/index.css";
 import { ToastProvider } from "./components/ui/Toast";
+import { CartProvider } from "./features/cart/context/CartProvider";
 
 const rootElement = document.getElementById("root");
 
@@ -20,8 +21,10 @@ createRoot(rootElement).render(
     <ThemeProvider>
       <Tooltip.Provider>
         <BrowserRouter>
-          <App />
-           <ToastProvider />
+          <CartProvider>
+            <App />
+          </CartProvider>
+          <ToastProvider />
         </BrowserRouter>
       </Tooltip.Provider>
     </ThemeProvider>
