@@ -6,6 +6,7 @@ import { ProductGallery } from "../components/ProductDetails/ProductGallery";
 import { ProductInfo } from "../components/ProductDetails/ProductInfo";
 import { PRODUCTS } from "../data/products.data";
 import { ProductMeta } from "../components/ProductDetails/ProductMeta";
+import { RelatedProducts } from "../components/ProductDetails/RelatedProducts";
 
 const ProductDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -83,6 +84,8 @@ const ProductDetailsPage = () => {
         </div>
 
         <ProductMeta product={product} />
+
+        <RelatedProducts currentProduct={product} products={PRODUCTS} />
       </div>
     </main>
   );
