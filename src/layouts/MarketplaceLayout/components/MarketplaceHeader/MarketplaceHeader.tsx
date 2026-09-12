@@ -10,16 +10,23 @@ import { useCart } from "@/features/cart/hooks/useCart";
 
 import { marketplaceHeaderStyles } from "./MarketplaceHeader.styles";
 import MobileNavigation from "../MobileNavigation";
+import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
 
 const MarketplaceHeader = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
+
+  const { wishlistCount } = useWishlist();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const handleCartClick = () => {
     navigate("/cart");
+  };
+
+  const handleWishlistClick = () => {
+    navigate("/wishlist");
   };
 
   return (
@@ -51,8 +58,15 @@ const MarketplaceHeader = () => {
               variant="ghost"
               aria-label="Wishlist"
               className={marketplaceHeaderStyles.actionButton}
+              onClick={handleWishlistClick}
             >
               <Heart className="h-5 w-5" />
+
+              {wishlistCount > 0 && (
+                <span className={marketplaceHeaderStyles.badge}>
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
+                </span>
+              )}
             </Button>
 
             <Button
@@ -110,8 +124,15 @@ const MarketplaceHeader = () => {
               variant="ghost"
               aria-label="Wishlist"
               className={marketplaceHeaderStyles.actionButton}
+              onClick={handleWishlistClick}
             >
               <Heart className="h-5 w-5" />
+
+              {wishlistCount > 0 && (
+                <span className={marketplaceHeaderStyles.badge}>
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
+                </span>
+              )}
             </Button>
 
             <Button
