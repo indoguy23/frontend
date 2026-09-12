@@ -11,6 +11,7 @@ import MarketplaceLayout from "@/layouts/MarketplaceLayout";
 
 import { ROUTES } from "./route";
 import ProductDetailsPage from "@/features/products/pages/ProductDetailsPage";
+import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 
 const AppRouter = () => {
   return (
@@ -24,6 +25,8 @@ const AppRouter = () => {
         <Route path={ROUTES.PRODUCT_DETAILS} element={<ProductDetailsPage />} />
 
         <Route path={ROUTES.CART} element={<CartPage />} />
+
+        <Route path="/wishlist" element={<WishlistPage />} />
       </Route>
 
       {/* Authentication */}

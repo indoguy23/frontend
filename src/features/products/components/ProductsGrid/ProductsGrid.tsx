@@ -7,6 +7,7 @@ import EmptyState from "@/components/ui/EmptyState";
 
 import { productsGridStyles } from "./ProductsGrid.styles";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
 
 interface ProductsGridProps {
   products: ProductCardData[];
@@ -17,6 +18,8 @@ const ProductsGrid = ({ products, onClearFilters }: ProductsGridProps) => {
   const navigate = useNavigate();
 
   const { addToCart } = useCart();
+
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   const handleViewDetails = (product: ProductCardData) => {
     navigate(`/products/${product.slug}`);
@@ -46,6 +49,8 @@ const ProductsGrid = ({ products, onClearFilters }: ProductsGridProps) => {
           product={product}
           onViewDetails={handleViewDetails}
           onAddToCart={addToCart}
+          onToggleWishlist={toggleWishlist}
+          isWishlisted={isWishlisted(product.id)}
         />
       ))}
     </div>
