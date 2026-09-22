@@ -32,11 +32,21 @@ const SearchBar = ({
   const debouncedValue = useDebounce(value, debounceMs);
 
   useEffect(() => {
-    onSearch?.(debouncedValue);
+    onSearch?.(debouncedValue.trim());
   }, [debouncedValue, onSearch]);
 
   const handleClear = () => {
     onChange("");
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter" || disabled) {
+      return;
+    }
+
+    event.preventDefault();
+
+    onSearch?.(value.trim());
   };
 
   return (
@@ -68,6 +78,7 @@ const SearchBar = ({
         placeholder={placeholder}
         aria-label={ariaLabel}
         onChange={(event) => onChange(event.target.value)}
+        onKeyDown={handleKeyDown}
         className={cn(
           searchBarStyles.input,
           searchBarStyles.inputSize[size ?? "md"],
