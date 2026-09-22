@@ -29,6 +29,16 @@ const MarketplaceHeader = () => {
     navigate("/wishlist");
   };
 
+  const handleSearch = (searchTerm: string) => {
+    const trimmedSearch = searchTerm.trim();
+
+    if (!trimmedSearch) {
+      return;
+    }
+
+    navigate(`/products?search=${encodeURIComponent(trimmedSearch)}`);
+  };
+
   return (
     <header className={marketplaceHeaderStyles.root}>
       <div className={marketplaceHeaderStyles.container}>
@@ -97,6 +107,7 @@ const MarketplaceHeader = () => {
           <SearchBar
             value={searchValue}
             onChange={setSearchValue}
+            onSearch={handleSearch}
             placeholder="Search products, brands & categories..."
             className="w-full"
           />

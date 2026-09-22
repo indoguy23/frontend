@@ -1,19 +1,21 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
+import Button from "@/components/ui/Button";
+import Dialog from "@/components/ui/Dialog";
+
+import { ProductFilters } from "../components/ProductFilters";
+import { ProductsGrid } from "../components/ProductsGrid";
 import { ProductsHeader } from "../components/ProductsHeader";
+import { ProductsPagination } from "../components/ProductsPagination";
 import {
   ProductsToolbar,
   type ProductSortValue,
 } from "../components/ProductsToolbar";
-import { ProductFilters } from "../components/ProductFilters";
-import { ProductsGrid } from "../components/ProductsGrid";
 
 import { PRODUCTS } from "../data/products.data";
 
 import type { ProductFiltersState } from "../types/products.types";
-import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
-import { ProductsPagination } from "../components/ProductsPagination";
 
 const INITIAL_FILTERS: ProductFiltersState = {
   categories: [],
@@ -23,7 +25,11 @@ const INITIAL_FILTERS: ProductFiltersState = {
   availability: [],
 };
 
+const PRODUCTS_PER_PAGE = 6;
+
 const ProductsPage = () => {
+  const [searchParams] = useSearchParams();
+
   const [sortBy, setSortBy] = useState<ProductSortValue>("featured");
 
   const [filters, setFilters] = useState<ProductFiltersState>(INITIAL_FILTERS);
@@ -32,10 +38,28 @@ const ProductsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const PRODUCT_PER_PAGE = 6;
+  const searchTerm = searchParams.get("search")?.trim() ?? "";
 
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
+
+    // Search
+    if (searchTerm) {
+      const normalizedSearchTerm = searchTerm.toLowerCase();
+
+      result = result.filter((product) => {
+        const searchableValues = [
+          product.name,
+          product.category,
+          product.description,
+          product.seller?.name,
+        ];
+
+        return searchableValues.some((value) =>
+          value?.toLowerCase().includes(normalizedSearchTerm),
+        );
+      });
+    }
 
     // Category
     if (filters.categories.length > 0) {
@@ -109,15 +133,19 @@ const ProductsPage = () => {
     }
 
     return result;
-  }, [filters, sortBy]);
+  }, [filters, sortBy, searchTerm]);
 
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCT_PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+
+  const safeCurrentPage = Math.min(currentPage, Math.max(totalPages, 1));
 
   const paginatedProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * PRODUCT_PER_PAGE;
-    const endIndex = startIndex + PRODUCT_PER_PAGE;
+    const startIndex = (safeCurrentPage - 1) * PRODUCTS_PER_PAGE;
+
+    const endIndex = startIndex + PRODUCTS_PER_PAGE;
+
     return filteredProducts.slice(startIndex, endIndex);
-  }, [filteredProducts, currentPage]);
+  }, [filteredProducts, safeCurrentPage]);
 
   const handleFilterClick = () => {
     setIsFilterOpen(true);
@@ -178,10 +206,10 @@ const ProductsPage = () => {
             />
 
             <ProductsPagination
-              currentPage={currentPage}
+              currentPage={safeCurrentPage}
               totalPages={totalPages}
               totalItems={filteredProducts.length}
-              pageSize={PRODUCT_PER_PAGE}
+              pageSize={PRODUCTS_PER_PAGE}
               onPageChange={setCurrentPage}
             />
           </section>
