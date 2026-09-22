@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 import type { ProductCardData } from "@/components/common/ProductCard";
 
@@ -10,7 +16,27 @@ interface WishlistProviderProps {
 }
 
 export const WishlistProvider = ({ children }: WishlistProviderProps) => {
-  const [items, setItems] = useState<WishlistItem[]>([]);
+  const WISHLIST_STORAGE_KEY = "markethub-wishlist";
+
+  const [items, setItems] = useState<WishlistItem[]>(() => {
+    try {
+      const storedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY);
+
+      if (!storedWishlist) {
+        return [];
+      }
+
+      const parsedWishlist = JSON.parse(storedWishlist);
+
+      return Array.isArray(parsedWishlist) ? parsedWishlist : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
   const toggleWishlist = (product: ProductCardData) => {
     setItems((currentItems) => {

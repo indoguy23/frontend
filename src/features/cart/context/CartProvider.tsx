@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import type { ProductCardData } from "@/components/common/ProductCard";
 
@@ -10,7 +10,26 @@ interface CartProviderProps {
 }
 
 export const CartProvider = ({ children }: CartProviderProps) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const CART_STORAGE_KEY = "markethub-cart";
+
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try {
+      const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (!storedCart) {
+        return [];
+      }
+
+      const parsedCart = JSON.parse(storedCart);
+
+      return Array.isArray(parsedCart) ? parsedCart : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
   const addToCart = (product: ProductCardData, quantity = 1) => {
     if (product.stock <= 0) {
