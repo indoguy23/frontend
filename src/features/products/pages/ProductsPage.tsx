@@ -28,7 +28,7 @@ const INITIAL_FILTERS: ProductFiltersState = {
 const PRODUCTS_PER_PAGE = 6;
 
 const ProductsPage = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [sortBy, setSortBy] = useState<ProductSortValue>("featured");
 
@@ -164,6 +164,16 @@ const ProductsPage = () => {
   const handleClearFilters = () => {
     setFilters(INITIAL_FILTERS);
     setCurrentPage(1);
+
+    if (searchParams.has("search")) {
+      const updatedParams = new URLSearchParams(searchParams);
+
+      updatedParams.delete("search");
+
+      setSearchParams(updatedParams, {
+        replace: true,
+      });
+    }
   };
 
   return (
