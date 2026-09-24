@@ -15,3 +15,10 @@ export type CheckoutAddressErrors = Partial<
 >;
 
 export type PaymentMethod = "cash-on-delivery" | "card" | "upi";
+
+export interface CheckOutTotals {
+  subtotal: number;
+  shipping: number;
+  discount: number;
+  total: number;
+}
