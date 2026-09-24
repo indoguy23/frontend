@@ -51,7 +51,12 @@ const CartPage = () => {
             </p>
           </div>
 
-          <Button type="button" variant="outline" onClick={clearCart}>
+          <Button
+            type="button"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={clearCart}
+          >
             Clear Cart
           </Button>
         </div>
@@ -100,6 +105,7 @@ const CartPage = () => {
                         variant="outline"
                         onClick={() => removeFromCart(product.id)}
                         aria-label={`Remove ${product.name} from cart`}
+                        className="h-2 w-2 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -196,9 +202,9 @@ const CartPage = () => {
 
             <Button
               type="button"
-              className="mt-6 w-full"
+              className="mt-6 w-full cursor-pointer"
               onClick={() => {
-                // Checkout flow will be added later.
+                navigate("/checkout");
               }}
             >
               Proceed to Checkout
@@ -207,7 +213,7 @@ const CartPage = () => {
             <Button
               type="button"
               variant="outline"
-              className="mt-3 w-full"
+              className="mt-3 w-full cursor-pointer"
               onClick={() => navigate("/products")}
             >
               Continue Shopping
