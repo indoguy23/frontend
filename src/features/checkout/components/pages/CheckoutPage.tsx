@@ -6,7 +6,7 @@ import { useCart } from "@/features/cart/hooks/useCart";
 import type {
   CheckoutAddressData,
   CheckoutAddressErrors,
-  CheckOutTotals,
+  CheckoutTotals,
   PaymentMethod,
 } from "../types/checkout.types";
 import { useState } from "react";
@@ -45,7 +45,7 @@ const CheckoutPage = () => {
   const shipping = 0;
   const discount = 0;
 
-  const totals: CheckOutTotals = {
+  const totals: CheckoutTotals = {
     subtotal,
     shipping,
     discount,

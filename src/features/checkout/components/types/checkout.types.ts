@@ -16,7 +16,7 @@ export type CheckoutAddressErrors = Partial<
 
 export type PaymentMethod = "cash-on-delivery" | "card" | "upi";
 
-export interface CheckOutTotals {
+export interface CheckoutTotals {
   subtotal: number;
   shipping: number;
   discount: number;
