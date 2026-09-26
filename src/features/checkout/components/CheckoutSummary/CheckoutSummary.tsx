@@ -1,11 +1,11 @@
 import Button from "@/components/ui/Button";
 
 import type { CartItem } from "@/features/cart/types/cart.types";
-import type { CheckOutTotals } from "../types/checkout.types";
+import type { CheckoutTotals } from "../types/checkout.types";
 
 interface CheckoutSummaryProps {
   items: CartItem[];
-  totals: CheckOutTotals;
+  totals: CheckoutTotals;
   onContinue: () => void;
 }
 

@@ -6,7 +6,7 @@ import { useCart } from "@/features/cart/hooks/useCart";
 import type {
   CheckoutAddressData,
   CheckoutAddressErrors,
-  CheckOutTotals,
+  CheckoutTotals,
   PaymentMethod,
 } from "../types/checkout.types";
 import { useState } from "react";
@@ -14,6 +14,8 @@ import { CheckoutAddress } from "../CheckoutAddress";
 import { validateCheckoutAddress } from "../../utils/checkoutValidation";
 import { CheckoutPayment } from "../CheckoutPayment";
 import { CheckoutSummary } from "../CheckoutSummary";
+import { CheckoutReview } from "../CheckoutReview";
+import { createOrder } from "../../services/checkout.service";
 
 const INITIAL_ADDRESS: CheckoutAddressData = {
   fullName: "",
@@ -30,6 +32,8 @@ const INITIAL_ADDRESS: CheckoutAddressData = {
 const CheckoutPage = () => {
   const navigate = useNavigate();
 
+  type CheckoutStep = "details" | "review";
+
   const { items, subtotal } = useCart();
 
   const [address, setAddress] = useState<CheckoutAddressData>(INITIAL_ADDRESS);
@@ -40,12 +44,14 @@ const CheckoutPage = () => {
     null,
   );
 
+  const [step, setStep] = useState<CheckoutStep>("details");
+
   const [paymentError, setPaymentError] = useState<string>("");
 
   const shipping = 0;
   const discount = 0;
 
-  const totals: CheckOutTotals = {
+  const totals: CheckoutTotals = {
     subtotal,
     shipping,
     discount,
@@ -70,8 +76,30 @@ const CheckoutPage = () => {
       return;
     }
 
+    setStep("review");
     // Checkout information is valid.
     // Actual order creation/payment integration comes later.
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!paymentMethod) {
+      return;
+    }
+
+    const payload = {
+      items: items.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+      })),
+      address,
+      paymentMethod,
+    };
+
+    try {
+      await createOrder(payload);
+    } catch (error) {
+      console.error("Failed to place order:", error);
+    }
   };
 
   if (items.length === 0) {
@@ -102,31 +130,40 @@ const CheckoutPage = () => {
             Complete your delivery and payment details.
           </p>
         </div>
+        {step === "details" ? (
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+            <div className="space-y-6">
+              <CheckoutAddress
+                value={address}
+                errors={addressErrors}
+                onChange={setAddress}
+              />
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="space-y-6">
-            <CheckoutAddress
-              value={address}
-              errors={addressErrors}
-              onChange={setAddress}
-            />
+              <CheckoutPayment
+                value={paymentMethod}
+                error={paymentError}
+                onChange={(method) => {
+                  setPaymentMethod(method);
+                  setPaymentError("");
+                }}
+              />
+            </div>
 
-            <CheckoutPayment
-              value={paymentMethod}
-              error={paymentError}
-              onChange={(method) => {
-                setPaymentMethod(method);
-                setPaymentError("");
-              }}
+            <CheckoutSummary
+              items={items}
+              totals={totals}
+              onContinue={handleContinue}
             />
           </div>
-
-          <CheckoutSummary
-            items={items}
+        ) : (
+          <CheckoutReview
+            address={address}
+            paymentMethod={paymentMethod!}
             totals={totals}
-            onContinue={handleContinue}
+            onBack={() => setStep("details")}
+            onPlaceOrder={handlePlaceOrder}
           />
-        </div>
+        )}
       </div>
     </main>
   );
