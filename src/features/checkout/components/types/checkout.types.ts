@@ -22,3 +22,26 @@ export interface CheckoutTotals {
   discount: number;
   total: number;
 }
+export interface CheckoutOrderItem {
+  productId: string;
+  quantity: number;
+}
+
+export interface CheckoutOrderRequest {
+  items: CheckoutOrderItem[];
+  address: CheckoutAddressData;
+  paymentMethod: PaymentMethod;
+  totals: CheckoutTotals;
+}
+
+export interface CreateOrderRequest {
+  items: CheckoutOrderItem[];
+  address: CheckoutAddressData;
+  paymentMethod: PaymentMethod;
+}
+
+export interface CreateOrderResponse {
+  orderId: string;
+  status: "pending" | "confirmed";
+  total: number;
+}
