@@ -1,3 +1,4 @@
+import PriceDisplay from "@/components/common/PriceDisplay";
 import Button from "@/components/ui/Button";
 
 import type { CartItem } from "@/features/cart/types/cart.types";
@@ -8,10 +9,6 @@ interface CheckoutSummaryProps {
   totals: CheckoutTotals;
   onContinue: () => void;
 }
-
-const formatPrice = (value: number) => {
-  return `₹${value.toLocaleString("en-IN")}`;
-};
 
 const CheckoutSummary = ({
   items,
@@ -40,14 +37,23 @@ const CheckoutSummary = ({
                     Qty: {quantity}
                   </p>
 
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {formatPrice(product.price)} each
-                  </p>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    <PriceDisplay
+                      price={product.price}
+                      showDiscount={false}
+                      size="sm"
+                    />
+                    <span> each</span>
+                  </div>
                 </div>
 
-                <p className="shrink-0 text-sm font-medium">
-                  {formatPrice(product.price * quantity)}
-                </p>
+                <div className="shrink-0 text-sm font-medium">
+                  <PriceDisplay
+                    price={product.price * quantity}
+                    showDiscount={false}
+                    size="sm"
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -58,17 +64,25 @@ const CheckoutSummary = ({
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm text-muted-foreground">Subtotal</span>
 
-              <span className="text-sm font-medium">
-                {formatPrice(totals.subtotal)}
-              </span>
+              <PriceDisplay
+                price={totals.subtotal}
+                showDiscount={false}
+                size="sm"
+              />
             </div>
 
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm text-muted-foreground">Shipping</span>
 
-              <span className="text-sm font-medium">
-                {totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)}
-              </span>
+              {totals.shipping === 0 ? (
+                <span className="text-sm font-medium">Free</span>
+              ) : (
+                <PriceDisplay
+                  price={totals.shipping}
+                  showDiscount={false}
+                  size="sm"
+                />
+              )}
             </div>
 
             {totals.discount > 0 && (
@@ -76,7 +90,12 @@ const CheckoutSummary = ({
                 <span className="text-sm text-muted-foreground">Discount</span>
 
                 <span className="text-sm font-medium">
-                  -{formatPrice(totals.discount)}
+                  -
+                  <PriceDisplay
+                    price={totals.discount}
+                    showDiscount={false}
+                    size="sm"
+                  />
                 </span>
               </div>
             )}
@@ -87,9 +106,7 @@ const CheckoutSummary = ({
           <div className="flex items-center justify-between gap-4">
             <span className="font-semibold">Total</span>
 
-            <span className="text-lg font-semibold">
-              {formatPrice(totals.total)}
-            </span>
+            <PriceDisplay price={totals.total} showDiscount={false} size="lg" />
           </div>
 
           <Button type="button" className="mt-6 w-full" onClick={onContinue}>

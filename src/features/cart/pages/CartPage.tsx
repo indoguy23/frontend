@@ -1,6 +1,7 @@
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import PriceDisplay from "@/components/common/PriceDisplay";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -105,7 +106,7 @@ const CartPage = () => {
                         variant="outline"
                         onClick={() => removeFromCart(product.id)}
                         aria-label={`Remove ${product.name} from cart`}
-                        className="h-2 w-2 cursor-pointer"
+                        className="h-8 w-8 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -115,9 +116,12 @@ const CartPage = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">Price</p>
 
-                        <p className="mt-1 font-semibold">
-                          ₹{product.price.toLocaleString("en-IN")}
-                        </p>
+                        <PriceDisplay
+                          price={product.price}
+                          showDiscount={false}
+                          size="sm"
+                          className="mt-1"
+                        />
                       </div>
 
                       <div>
@@ -155,9 +159,12 @@ const CartPage = () => {
                       <div className="text-right">
                         <p className="text-sm text-muted-foreground">Total</p>
 
-                        <p className="mt-1 font-semibold">
-                          ₹{(product.price * quantity).toLocaleString("en-IN")}
-                        </p>
+                        <PriceDisplay
+                          price={product.price * quantity}
+                          showDiscount={false}
+                          size="sm"
+                          className="mt-1"
+                        />
                       </div>
                     </div>
                   </div>
@@ -178,9 +185,7 @@ const CartPage = () => {
               <div className="flex items-center justify-between gap-4 text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
 
-                <span className="font-medium">
-                  ₹{subtotal.toLocaleString("en-IN")}
-                </span>
+                <PriceDisplay price={subtotal} showDiscount={false} size="sm" />
               </div>
 
               <div className="flex items-center justify-between gap-4 text-sm">
@@ -195,17 +200,13 @@ const CartPage = () => {
             <div className="flex items-center justify-between gap-4">
               <span className="font-semibold">Total</span>
 
-              <span className="text-xl font-semibold">
-                ₹{subtotal.toLocaleString("en-IN")}
-              </span>
+              <PriceDisplay price={subtotal} showDiscount={false} size="lg" />
             </div>
 
             <Button
               type="button"
               className="mt-6 w-full cursor-pointer"
-              onClick={() => {
-                navigate("/checkout");
-              }}
+              onClick={() => navigate("/checkout")}
             >
               Proceed to Checkout
             </Button>

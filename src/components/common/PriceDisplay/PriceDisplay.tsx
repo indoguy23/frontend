@@ -1,3 +1,5 @@
+import { FaRupeeSign } from "react-icons/fa";
+
 import Badge from "@/components/ui/Badge";
 import { cn } from "@/utils/cn";
 
@@ -22,24 +24,32 @@ const PriceDisplay = ({
   className,
 }: PriceDisplayProps) => {
   const formatter = new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
     maximumFractionDigits: 0,
   });
 
   const discount = calculateDiscount(price, originalPrice);
+
+  const renderPrice = (amount: number) => (
+    <span className="inline-flex items-center gap-1">
+      {currency === "INR" && (
+        <FaRupeeSign aria-hidden="true" className="shrink-0" />
+      )}
+
+      {formatter.format(amount)}
+    </span>
+  );
 
   return (
     <div className={cn(priceDisplayStyles.root, className)}>
       <span
         className={cn(priceDisplayStyles.current, priceDisplayStyles[size])}
       >
-        {formatter.format(price)}
+        {renderPrice(price)}
       </span>
 
       {originalPrice && originalPrice > price && (
         <span className={priceDisplayStyles.original}>
-          {formatter.format(originalPrice)}
+          {renderPrice(originalPrice)}
         </span>
       )}
 
