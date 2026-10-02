@@ -39,7 +39,7 @@ const CheckoutReview = ({
     <>
       <div className="space-y-6">
         {/* Delivery Address */}
-        <section className="rounded-xl border bg-card p-4 sm:p-6">
+        <section className="rounded-xl  bg-card p-4 sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
@@ -48,7 +48,6 @@ const CheckoutReview = ({
 
             <Button type="button" variant="ghost" size="sm" onClick={onBack}>
               <Pencil className="mr-2 h-4 w-4" />
-              Edit
             </Button>
           </div>
 
@@ -68,7 +67,7 @@ const CheckoutReview = ({
         </section>
 
         {/* Payment Method */}
-        <section className="rounded-xl border bg-card p-4 sm:p-6">
+        <section className="rounded-xl  bg-card p-4 sm:p-6">
           <div className="flex items-center gap-2">
             <PaymentIcon className="h-5 w-5" />
             <h2 className="text-lg font-semibold">Payment Method</h2>
@@ -86,7 +85,7 @@ const CheckoutReview = ({
         </section>
 
         {/* Order Total */}
-        <section className="rounded-xl border bg-card p-4 sm:p-6">
+        <section className="rounded-xl  bg-card p-4 sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <span className="font-semibold">Order Total</span>
 
@@ -98,7 +97,7 @@ const CheckoutReview = ({
         {error && (
           <div
             role="alert"
-            className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+            className="rounded-lg border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
           >
             {error}
           </div>
