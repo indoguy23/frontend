@@ -31,6 +31,7 @@ const Button = ({
           size,
           fullWidth,
         }),
+        "cursor-pointer",
         className,
       )}
       {...props}

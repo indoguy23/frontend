@@ -1,21 +1,22 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 import { useCart } from "@/features/cart/hooks/useCart";
+
 import type {
   CheckoutAddressData,
   CheckoutAddressErrors,
   CheckoutTotals,
   PaymentMethod,
 } from "../types/checkout.types";
-import { useState } from "react";
-import { CheckoutAddress } from "../CheckoutAddress";
 import { validateCheckoutAddress } from "../../utils/checkoutValidation";
+import { createOrder } from "../../services/checkout.service";
+import { CheckoutAddress } from "../CheckoutAddress";
 import { CheckoutPayment } from "../CheckoutPayment";
 import { CheckoutSummary } from "../CheckoutSummary";
 import { CheckoutReview } from "../CheckoutReview";
-import { createOrder } from "../../services/checkout.service";
 
 const INITIAL_ADDRESS: CheckoutAddressData = {
   fullName: "",
@@ -29,12 +30,12 @@ const INITIAL_ADDRESS: CheckoutAddressData = {
   country: "India",
 };
 
+type CheckoutStep = "details" | "review";
+
 const CheckoutPage = () => {
   const navigate = useNavigate();
 
-  type CheckoutStep = "details" | "review";
-
-  const { items, subtotal } = useCart();
+  const { items, subtotal, clearCart } = useCart();
 
   const [address, setAddress] = useState<CheckoutAddressData>(INITIAL_ADDRESS);
 
@@ -81,8 +82,6 @@ const CheckoutPage = () => {
     }
 
     setStep("review");
-    // Checkout information is valid.
-    // Actual order creation/payment integration comes later.
   };
 
   const handlePlaceOrder = async () => {
@@ -103,7 +102,15 @@ const CheckoutPage = () => {
     };
 
     try {
-      await createOrder(payload);
+      const response = await createOrder(payload);
+
+      clearCart();
+
+      navigate("/orders/success", {
+        state: {
+          order: response,
+        },
+      });
     } catch (error) {
       console.error("Failed to place order:", error);
 
@@ -145,6 +152,7 @@ const CheckoutPage = () => {
             Complete your delivery and payment details.
           </p>
         </div>
+
         {step === "details" ? (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
             <div className="space-y-6">
