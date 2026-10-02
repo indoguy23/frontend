@@ -48,6 +48,10 @@ const CheckoutPage = () => {
 
   const [paymentError, setPaymentError] = useState<string>("");
 
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  const [orderError, setOrderError] = useState("");
+
   const shipping = 0;
   const discount = 0;
 
@@ -82,9 +86,12 @@ const CheckoutPage = () => {
   };
 
   const handlePlaceOrder = async () => {
-    if (!paymentMethod) {
+    if (!paymentMethod || isPlacingOrder) {
       return;
     }
+
+    setIsPlacingOrder(true);
+    setOrderError("");
 
     const payload = {
       items: items.map((item) => ({
@@ -99,6 +106,14 @@ const CheckoutPage = () => {
       await createOrder(payload);
     } catch (error) {
       console.error("Failed to place order:", error);
+
+      setOrderError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while placing your order.",
+      );
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -160,6 +175,8 @@ const CheckoutPage = () => {
             address={address}
             paymentMethod={paymentMethod!}
             totals={totals}
+            isPlacingOrder={isPlacingOrder}
+            error={orderError}
             onBack={() => setStep("details")}
             onPlaceOrder={handlePlaceOrder}
           />
