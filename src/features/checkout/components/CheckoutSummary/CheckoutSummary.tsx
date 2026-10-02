@@ -18,7 +18,7 @@ const CheckoutSummary = ({
   return (
     <>
       <aside>
-        <div className="rounded-xl border bg-card p-4 sm:p-6 lg:sticky lg:top-6">
+        <div className="rounded-xl bg-card p-4 sm:p-6 lg:sticky lg:top-6">
           <h2 className="text-lg font-semibold">Order Summary</h2>
 
           <div className="mt-5 space-y-4">
@@ -27,7 +27,7 @@ const CheckoutSummary = ({
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="h-16 w-16 shrink-0 rounded-lg border object-contain p-1"
+                  className="h-16 w-16 shrink-0 rounded-lg object-contain p-1"
                 />
 
                 <div className="min-w-0 flex-1">
@@ -58,7 +58,7 @@ const CheckoutSummary = ({
             ))}
           </div>
 
-          <div className="my-5 border-t" />
+          <div className="my-5 " />
 
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
@@ -101,7 +101,7 @@ const CheckoutSummary = ({
             )}
           </div>
 
-          <div className="my-5 border-t" />
+          <div className="my-5 " />
 
           <div className="flex items-center justify-between gap-4">
             <span className="font-semibold">Total</span>
@@ -109,7 +109,11 @@ const CheckoutSummary = ({
             <PriceDisplay price={totals.total} showDiscount={false} size="lg" />
           </div>
 
-          <Button type="button" className="mt-6 w-full" onClick={onContinue}>
+          <Button
+            type="button"
+            className="mt-6 w-full cursor-pointer"
+            onClick={onContinue}
+          >
             Continue
           </Button>
 
