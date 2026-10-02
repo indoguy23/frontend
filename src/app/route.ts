@@ -8,6 +8,7 @@ export const ROUTES = {
   WISHLIST: "/wishlist",
   CHECKOUT: "/checkout",
   ORDERS: "/orders",
+  ORDERS_SUCCESS: "/orders/success",
 
   LOGIN: "/login",
   REGISTER: "/register",
