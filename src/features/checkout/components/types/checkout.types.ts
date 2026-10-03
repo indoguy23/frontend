@@ -1,3 +1,7 @@
+import type { PaymentMethod } from "@/features/orders/types/payment.types";
+
+export type { PaymentMethod } from "@/features/orders/types/payment.types";
+
 export interface CheckoutAddressData {
   fullName: string;
   phone: string;
@@ -14,14 +18,13 @@ export type CheckoutAddressErrors = Partial<
   Record<keyof CheckoutAddressData, string>
 >;
 
-export type PaymentMethod = "cash-on-delivery" | "card" | "upi";
-
 export interface CheckoutTotals {
   subtotal: number;
   shipping: number;
   discount: number;
   total: number;
 }
+
 export interface CheckoutOrderItem {
   productId: string;
   quantity: number;
