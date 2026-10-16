@@ -14,6 +14,7 @@ import ProductDetailsPage from "@/features/products/pages/ProductDetailsPage";
 import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 import CheckoutPage from "@/features/checkout/components/pages/CheckoutPage";
 import OrderSuccessPage from "@/features/orders/pages/OrderSuccessPage";
+import OrdersPage from "@/features/orders/pages/OrdersPage";
 
 const AppRouter = () => {
   return (
@@ -31,6 +32,8 @@ const AppRouter = () => {
         <Route path="/wishlist" element={<WishlistPage />} />
 
         <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
+
+        <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
 
         <Route path={ROUTES.ORDERS_SUCCESS} element={<OrderSuccessPage />} />
       </Route>
