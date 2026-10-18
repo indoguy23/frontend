@@ -4,6 +4,7 @@ import PriceDisplay from "@/components/common/PriceDisplay";
 import Button from "@/components/ui/Button";
 
 import { ORDER_STATUS_CONFIG } from "../../data/orderStatus.data";
+import OrderStatusTimeline from "../OrderStatusTimeline";
 import type { OrderDetailsProps } from "./OrderDetails.types";
 import { orderDetailsStyles as styles } from "./OrderDetails.styles";
 
@@ -52,6 +53,12 @@ const OrderDetails = ({
         </div>
       </div>
 
+      <OrderStatusTimeline
+        status={order.status}
+        createdAt={order.createdAt}
+        updatedAt={order.updatedAt}
+      />
+
       <div className={styles.panel}>
         <h2 className={styles.panelTitle}>Products</h2>
 
@@ -66,7 +73,9 @@ const OrderDetails = ({
 
               <div className={styles.itemContent}>
                 <p className={styles.itemName}>{item.productName}</p>
+
                 <p className={styles.itemMeta}>Quantity: {item.quantity}</p>
+
                 <div className="mt-2">
                   <PriceDisplay
                     price={item.price}
@@ -97,6 +106,7 @@ const OrderDetails = ({
           <div className="mt-4 text-sm">
             <p className="font-medium">{order.address.fullName}</p>
             <p className="mt-1">{order.address.phone}</p>
+
             <p className="mt-3 text-muted-foreground">
               {order.address.addressLine1}
               {order.address.addressLine2 && `, ${order.address.addressLine2}`}
@@ -118,6 +128,7 @@ const OrderDetails = ({
           <div className={styles.summary}>
             <div className={styles.summaryRow}>
               <span className="text-muted-foreground">Subtotal</span>
+
               <PriceDisplay
                 price={order.subtotal}
                 showDiscount={false}
@@ -127,6 +138,7 @@ const OrderDetails = ({
 
             <div className={styles.summaryRow}>
               <span className="text-muted-foreground">Shipping</span>
+
               {order.shipping === 0 ? (
                 <span>Free</span>
               ) : (
@@ -141,6 +153,7 @@ const OrderDetails = ({
             {order.discount > 0 && (
               <div className={styles.summaryRow}>
                 <span className="text-muted-foreground">Discount</span>
+
                 <PriceDisplay
                   price={order.discount}
                   showDiscount={false}
@@ -152,6 +165,7 @@ const OrderDetails = ({
             <div className="border-t border-border pt-3">
               <div className={styles.summaryRow}>
                 <span className="font-semibold">Total</span>
+
                 <PriceDisplay
                   price={order.total}
                   showDiscount={false}
