@@ -15,6 +15,7 @@ import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 import CheckoutPage from "@/features/checkout/components/pages/CheckoutPage";
 import OrderSuccessPage from "@/features/orders/pages/OrderSuccessPage";
 import OrdersPage from "@/features/orders/pages/OrdersPage";
+import OrderDetailsPage from "@/features/orders/pages/OrderDetailsPage";
 
 const AppRouter = () => {
   return (
@@ -36,6 +37,8 @@ const AppRouter = () => {
         <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
 
         <Route path={ROUTES.ORDERS_SUCCESS} element={<OrderSuccessPage />} />
+
+        <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
       </Route>
 
       {/* Authentication */}
