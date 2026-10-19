@@ -5,17 +5,17 @@ import LoginPage from "../features/auth/pages/LoginPage";
 import CartPage from "../features/cart/pages/CartPage";
 import HomePage from "../features/home/pages/HomePage";
 import ProductsPage from "../features/products/pages/ProductsPage";
-
+import RegisterPage from "../features/auth/pages/RegisterPage";
 import DesignSystemPage from "@/features/design-system/pages/DesignSystemPage";
-import MarketplaceLayout from "@/layouts/MarketplaceLayout";
-
-import { ROUTES } from "./route";
+import OrderDetailsPage from "@/features/orders/pages/OrderDetailsPage";
+import OrderSuccessPage from "@/features/orders/pages/OrderSuccessPage";
+import OrdersPage from "@/features/orders/pages/OrdersPage";
 import ProductDetailsPage from "@/features/products/pages/ProductDetailsPage";
 import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 import CheckoutPage from "@/features/checkout/components/pages/CheckoutPage";
-import OrderSuccessPage from "@/features/orders/pages/OrderSuccessPage";
-import OrdersPage from "@/features/orders/pages/OrdersPage";
-import OrderDetailsPage from "@/features/orders/pages/OrderDetailsPage";
+import MarketplaceLayout from "@/layouts/MarketplaceLayout";
+
+import { ROUTES } from "./route";
 
 const AppRouter = () => {
   return (
@@ -43,6 +43,7 @@ const AppRouter = () => {
 
       {/* Authentication */}
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+      <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
 
       {/* Development Design System */}
       <Route path={ROUTES.DESIGN_SYSTEM} element={<DesignSystemPage />} />
