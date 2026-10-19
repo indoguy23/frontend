@@ -1,14 +1,50 @@
-const LoginPage = () => {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-slate-900">Sign In</h1>
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-        <p className="mt-3 text-slate-600">
-          Customer, vendor and admin authentication will begin here.
-        </p>
-      </div>
-    </main>
+import AuthLayout from "../components/AuthLayout";
+import LoginForm, { type LoginFormValues } from "../components/LoginForm";
+
+const LoginPage = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (values: LoginFormValues) => {
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      // Authentication API will be connected after the Django backend is ready.
+      void values;
+
+      setError(
+        "Login is not connected yet. Please try again after backend integration.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <AuthLayout
+        title="Welcome back"
+        description="Sign in to your MarketHub account to continue shopping."
+        footer={
+          <p>
+            Don't have an account?{" "}
+            <Link to="/register" className="font-medium underline">
+              Create an account
+            </Link>
+          </p>
+        }
+      >
+        <LoginForm
+          onSubmit={handleLogin}
+          isSubmitting={isSubmitting}
+          error={error}
+        />
+      </AuthLayout>
+    </>
   );
 };
 
