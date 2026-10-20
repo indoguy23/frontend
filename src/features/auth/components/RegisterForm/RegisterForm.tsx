@@ -1,13 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { Eye, EyeOff, LockKeyhole, Mail, Store, UserRound } from "lucide-react";
 import {
-  Eye,
-  EyeOff,
-  LockKeyhole,
-  Mail,
-  Store,
-  UserRound,
-} from "lucide-react";
+  validateRegister,
+  type RegisterErrors,
+} from "../../utils/authValidation";
+import type { RegisterRequest } from "../../types/auth.types";
 
 type AccountRole = "customer" | "vendor";
 
@@ -25,6 +23,9 @@ interface RegisterFormProps {
   error?: string;
 }
 
+type RegisterFormErrors = RegisterErrors &
+  Partial<Record<"storeName" | "acceptedTerms", string>>;
+
 const RegisterForm = ({
   onSubmit,
   isSubmitting = false,
@@ -39,7 +40,7 @@ const RegisterForm = ({
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<RegisterFormErrors>({});
 
   const inputClass =
     "min-w-0 w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-8 pr-8 text-xs text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-700 focus:ring-4 focus:ring-teal-700/10";
@@ -47,32 +48,19 @@ const RegisterForm = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nextErrors: Record<string, string> = {};
+    const values: RegisterRequest = {
+      fullName: fullName.trim(),
+      email: email.trim(),
+      password,
+      confirmPassword,
+    };
 
-    if (!fullName.trim()) {
-      nextErrors.fullName = "Full name is required.";
-    } else if (fullName.trim().length < 3) {
-      nextErrors.fullName = "Enter at least 3 characters.";
-    }
+    const nextErrors: RegisterFormErrors = {
+      ...validateRegister(values),
+    };
 
     if (role === "vendor" && !storeName.trim()) {
       nextErrors.storeName = "Store name is required for vendors.";
-    }
-
-    if (!email.trim()) {
-      nextErrors.email = "Email address is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      nextErrors.email = "Enter a valid email address.";
-    }
-
-    if (password.length < 8) {
-      nextErrors.password = "Password must contain at least 8 characters.";
-    }
-
-    if (!confirmPassword) {
-      nextErrors.confirmPassword = "Please confirm your password.";
-    } else if (password !== confirmPassword) {
-      nextErrors.confirmPassword = "Passwords do not match.";
     }
 
     if (!acceptedTerms) {
@@ -84,17 +72,15 @@ const RegisterForm = ({
     if (Object.keys(nextErrors).length > 0) return;
 
     await onSubmit({
-      fullName: fullName.trim(),
+      ...values,
+      email: values.email.toLowerCase(),
       storeName: role === "vendor" ? storeName.trim() : "",
-      email: email.trim().toLowerCase(),
-      password,
-      confirmPassword,
       role,
       acceptedTerms,
     });
   };
 
-  const renderError = (field: string) =>
+  const renderError = (field: keyof RegisterFormErrors) =>
     errors[field] ? (
       <p className="mt-1 text-xs text-red-600">{errors[field]}</p>
     ) : null;
@@ -192,9 +178,7 @@ const RegisterForm = ({
           </div>
         )}
 
-        <div
-          className={`min-w-0 ${role === "vendor" ? "col-span-2" : ""}`}
-        >
+        <div className={`min-w-0 ${role === "vendor" ? "col-span-2" : ""}`}>
           <label
             htmlFor="register-email"
             className="mb-1 block text-xs font-semibold text-slate-800"
@@ -332,7 +316,7 @@ const RegisterForm = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="col-span-2 w-full cursor-pointer rounded-lg bg-gradient-to-r from-teal-600 to-teal-800 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-800/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="col-span-2 w-full cursor-pointer rounded-lg bg-linear-to-r from-teal-600 to-teal-800 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-800/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Creating account..." : "Create account"}
         </button>

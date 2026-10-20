@@ -16,6 +16,7 @@ import CheckoutPage from "@/features/checkout/components/pages/CheckoutPage";
 import MarketplaceLayout from "@/layouts/MarketplaceLayout";
 
 import { ROUTES } from "./route";
+import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
 
 const AppRouter = () => {
   return (
@@ -44,6 +45,7 @@ const AppRouter = () => {
       {/* Authentication */}
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+      <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
 
       {/* Development Design System */}
       <Route path={ROUTES.DESIGN_SYSTEM} element={<DesignSystemPage />} />

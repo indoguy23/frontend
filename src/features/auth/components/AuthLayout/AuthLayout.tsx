@@ -26,7 +26,7 @@ const AuthLayout = ({
         className={`${fitViewport ? "h-dvh overflow-hidden" : "min-h-screen"} bg-[#edf3f6] lg:grid lg:grid-cols-[43.5%_56.5%]`}
       >
         <aside
-          className={`${fitViewport ? "h-full min-h-0" : "min-h-screen"} relative hidden overflow-hidden bg-gradient-to-b from-[#0e2033] via-[#123047] to-[#105054] px-10 py-10 text-white lg:flex lg:flex-col xl:px-14`}
+          className={`${fitViewport ? "h-full min-h-0" : "min-h-screen"} relative hidden overflow-hidden bg-linear-to-b from-[#0e2033] via-[#123047] to-[#105054] px-10 py-10 text-white lg:flex lg:flex-col xl:px-14`}
         >
           <div className="pointer-events-none absolute -right-16 -top-20 h-80 w-80 rounded-full border border-orange-400/30" />
           <div className="pointer-events-none absolute right-8 top-16 h-28 w-28 rotate-12 rounded-[28px] bg-teal-700/40" />
@@ -101,7 +101,7 @@ const AuthLayout = ({
           className={`${fitViewport ? "h-full min-h-0 overflow-hidden py-3" : "min-h-screen py-8"} flex items-center justify-center px-4 sm:px-8 lg:px-10 xl:px-16`}
         >
           <div
-            className={`${fitViewport ? `max-h-full ${noScroll ? "overflow-hidden" : "overflow-y-auto"} p-5 sm:p-7 xl:p-8` : "p-6 sm:p-9 xl:p-10"} w-full max-w-[460px] rounded-[24px] bg-white shadow-[0_18px_55px_rgba(15,35,55,0.12)]`}
+            className={`${fitViewport ? `max-h-full ${noScroll ? "overflow-hidden" : "overflow-y-auto"} p-5 sm:p-7 xl:p-8` : "p-6 sm:p-9 xl:p-10"} w-full max-w-115 rounded-3xl bg-white shadow-[0_18px_55px_rgba(15,35,55,0.12)]`}
           >
             <div
               className={`${noScroll ? "hidden" : fitViewport ? "mb-3 lg:hidden" : "mb-5 lg:hidden"}`}
