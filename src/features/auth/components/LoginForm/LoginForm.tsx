@@ -27,14 +27,16 @@ interface LoginFormProps {
   onSubmit: (values: LoginRequest & { rememberMe: boolean }) => Promise<void>;
   isSubmitting?: boolean;
   error?: string;
+  initialEmail?: string;
 }
 
 const LoginForm = ({
   onSubmit,
   isSubmitting = false,
   error = "",
+  initialEmail = "",
 }: LoginFormProps) => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
