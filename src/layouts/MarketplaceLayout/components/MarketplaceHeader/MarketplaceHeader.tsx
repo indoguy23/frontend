@@ -1,25 +1,75 @@
-import { useState } from "react";
-
-import { Heart, Menu, ShoppingCart, UserRound } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Heart, LogOut, Menu, ShoppingCart, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import SearchBar from "@/components/common/SearchBar";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/features/cart/hooks/useCart";
-
-import { marketplaceHeaderStyles } from "./MarketplaceHeader.styles";
-import MobileNavigation from "../MobileNavigation";
 import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
+
+import MobileNavigation from "../MobileNavigation";
+import { marketplaceHeaderStyles } from "./MarketplaceHeader.styles";
+
+type DemoSession = {
+  email: string;
+  fullName?: string;
+  role: string;
+  storeName?: string;
+};
+
+const getCurrentSession = (): DemoSession | null => {
+  try {
+    const storedSession =
+      localStorage.getItem("markethub-demo-session") ??
+      sessionStorage.getItem("markethub-demo-session");
+
+    return storedSession ? (JSON.parse(storedSession) as DemoSession) : null;
+  } catch {
+    return null;
+  }
+};
 
 const MarketplaceHeader = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
-
   const { wishlistCount } = useWishlist();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [userSession, setUserSession] = useState<DemoSession | null>(
+    getCurrentSession,
+  );
+
+  const accountMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!accountMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(event.target as Node)
+      ) {
+        setAccountMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [accountMenuOpen]);
 
   const handleCartClick = () => {
     navigate("/cart");
@@ -32,12 +82,99 @@ const MarketplaceHeader = () => {
   const handleSearch = (searchTerm: string) => {
     const trimmedSearch = searchTerm.trim();
 
-    if (!trimmedSearch) {
-      return;
-    }
+    if (!trimmedSearch) return;
 
     navigate(`/products?search=${encodeURIComponent(trimmedSearch)}`);
   };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("markethub-demo-session");
+    sessionStorage.removeItem("markethub-demo-session");
+
+    setUserSession(null);
+    setAccountMenuOpen(false);
+    setMobileMenuOpen(false);
+
+    navigate("/login", { replace: true });
+  };
+
+  const handleSignIn = () => {
+    setAccountMenuOpen(false);
+    setMobileMenuOpen(false);
+    navigate("/login");
+  };
+
+  const renderAccountMenu = () => (
+    <div className="relative" ref={accountMenuRef}>
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        aria-label="Account menu"
+        aria-expanded={accountMenuOpen}
+        aria-haspopup="menu"
+        className={marketplaceHeaderStyles.actionButton}
+        onClick={() => {
+          setUserSession(getCurrentSession());
+          setAccountMenuOpen((open) => !open);
+        }}
+      >
+        <UserRound className="h-5 w-5" />
+      </Button>
+
+      {accountMenuOpen && (
+        <div
+          className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-border bg-background p-2 shadow-lg"
+          role="menu"
+          aria-label="Account options"
+        >
+          <div className="border-b border-border px-3 py-3">
+            <p className="truncate text-sm font-semibold text-foreground">
+              {userSession?.fullName || "My Account"}
+            </p>
+
+            <p className="mt-1 truncate text-xs text-muted-foreground">
+              {userSession?.email || "Not signed in"}
+            </p>
+
+            {userSession && (
+              <p className="mt-2 text-xs capitalize text-muted-foreground">
+                Role: {userSession.role}
+              </p>
+            )}
+
+            {userSession?.storeName && (
+              <p className="mt-1 truncate text-xs text-muted-foreground">
+                Store: {userSession.storeName}
+              </p>
+            )}
+          </div>
+
+          {userSession ? (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={handleSignOut}
+              className="mt-1 flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
+          ) : (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={handleSignIn}
+              className="mt-1 flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-muted"
+            >
+              <UserRound className="h-4 w-4" />
+              Sign In
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <header className={marketplaceHeaderStyles.root}>
@@ -98,6 +235,8 @@ const MarketplaceHeader = () => {
               )}
             </Button>
 
+            {renderAccountMenu()}
+
             <ThemeToggle />
           </div>
         </div>
@@ -123,6 +262,7 @@ const MarketplaceHeader = () => {
             <SearchBar
               value={searchValue}
               onChange={setSearchValue}
+              onSearch={handleSearch}
               placeholder="Search products, brands & categories..."
               className="w-full"
             />
@@ -165,15 +305,7 @@ const MarketplaceHeader = () => {
               )}
             </Button>
 
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              aria-label="Account"
-              className={marketplaceHeaderStyles.actionButton}
-            >
-              <UserRound className="h-5 w-5" />
-            </Button>
+            {renderAccountMenu()}
 
             <ThemeToggle />
           </div>
