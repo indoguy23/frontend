@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import Dialog from "@/components/ui/Dialog";
+import type { LoginRequest } from "../../types/auth.types";
+import { validateLogin, type LoginErrors } from "../../utils/authValidation";
 
 const demoAccounts = [
   {
@@ -22,11 +24,7 @@ const demoAccounts = [
 ];
 
 interface LoginFormProps {
-  onSubmit: (values: {
-    email: string;
-    password: string;
-    rememberMe: boolean;
-  }) => Promise<void>;
+  onSubmit: (values: LoginRequest & { rememberMe: boolean }) => Promise<void>;
   isSubmitting?: boolean;
   error?: string;
 }
@@ -41,30 +39,24 @@ const LoginForm = ({
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [demoAccountsOpen, setDemoAccountsOpen] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<LoginErrors>({});
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nextErrors: Record<string, string> = {};
+    const values: LoginRequest = {
+      email: email.trim(),
+      password,
+    };
 
-    if (!email.trim()) {
-      nextErrors.email = "Email address is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      nextErrors.email = "Enter a valid email address.";
-    }
-
-    if (!password) {
-      nextErrors.password = "Password is required.";
-    }
-
+    const nextErrors = validateLogin(values);
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) return;
 
     await onSubmit({
-      email: email.trim().toLowerCase(),
-      password,
+      ...values,
+      email: values.email.toLowerCase(),
       rememberMe,
     });
   };
@@ -191,7 +183,7 @@ const LoginForm = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-teal-600 to-teal-800 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-800/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full cursor-pointer rounded-xl bg-linear-to-r from-teal-600 to-teal-800 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-800/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Signing in..." : "Sign in"}
         </button>
