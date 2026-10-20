@@ -3,51 +3,70 @@ import { useNavigate } from "react-router-dom";
 
 import AuthLayout from "../components/AuthLayout";
 import RegisterForm from "../components/RegisterForm";
+import {
+  getRegisteredDemoUsers,
+  hashDemoPassword,
+  saveRegisteredDemoUsers,
+} from "../utils/demoAuth";
+
+interface RegisterValues {
+  fullName: string;
+  storeName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: "customer" | "vendor";
+  acceptedTerms: boolean;
+}
 
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleRegister = async (values: {
-    fullName: string;
-    storeName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    role: "customer" | "vendor";
-    acceptedTerms: boolean;
-  }) => {
+  const handleRegister = async (values: RegisterValues) => {
     setIsSubmitting(true);
     setError("");
 
     try {
-      const existingUsers = JSON.parse(
-        localStorage.getItem("markethub-demo-users") || "[]",
-      ) as Array<{ email: string }>;
+      const email = values.email.trim().toLowerCase();
+      const existingUsers = getRegisteredDemoUsers();
 
-      if (existingUsers.some((user) => user.email === values.email)) {
-        setError("An account with this email already exists in demo mode.");
+      const emailAlreadyExists = existingUsers.some(
+        (user) => user.email.toLowerCase() === email,
+      );
+
+      const demoEmails = [
+        "admin@markethub.demo",
+        "vendor@markethub.demo",
+        "customer@markethub.demo",
+      ];
+
+      if (emailAlreadyExists || demoEmails.includes(email)) {
+        setError("An account with this email already exists.");
         return;
       }
 
+      const passwordHash = await hashDemoPassword(values.password);
+
       const newUser = {
-        fullName: values.fullName,
-        email: values.email,
+        fullName: values.fullName.trim(),
+        email,
+        passwordHash,
         role: values.role,
-        storeName: values.role === "vendor" ? values.storeName : "",
+        storeName: values.role === "vendor" ? values.storeName.trim() : "",
       };
 
-      localStorage.setItem(
-        "markethub-demo-users",
-        JSON.stringify([...existingUsers, newUser]),
-      );
+      saveRegisteredDemoUsers([...existingUsers, newUser]);
 
       navigate("/login", {
-        state: { message: "Demo registration completed. Sign in to continue." },
+        state: {
+          message: "Registration successful. Please sign in to continue.",
+          email,
+        },
       });
     } catch {
-      setError("Unable to complete demo registration. Please try again.");
+      setError("Unable to complete registration. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
