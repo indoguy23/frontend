@@ -1,128 +1,271 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import Dialog from "@/components/ui/Dialog";
 
-import Button from "@/components/ui/Button";
+const demoAccounts = [
+  {
+    label: "ADMIN PANEL",
+    email: "admin@markethub.demo",
+    password: "Admin@123",
+  },
+  {
+    label: "VENDOR PANEL",
+    email: "vendor@markethub.demo",
+    password: "Vendor@123",
+  },
+  {
+    label: "CUSTOMER",
+    email: "customer@markethub.demo",
+    password: "Customer@123",
+  },
+];
 
-import { validateLogin } from "../../utils/authValidation";
-import type { LoginErrors } from "../../utils/authValidation";
-import type { LoginFormProps, LoginFormValues } from "./LoginForm.types";
-import { loginFormStyles as styles } from "./LoginForm.styles";
-
-const INITIAL_VALUES: LoginFormValues = {
-  email: "",
-  password: "",
-};
+interface LoginFormProps {
+  onSubmit: (values: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  }) => Promise<void>;
+  isSubmitting?: boolean;
+  error?: string;
+}
 
 const LoginForm = ({
   onSubmit,
   isSubmitting = false,
-  error,
+  error = "",
 }: LoginFormProps) => {
-  const [values, setValues] = useState<LoginFormValues>(INITIAL_VALUES);
-  const [errors, setErrors] = useState<LoginErrors>({});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [demoAccountsOpen, setDemoAccountsOpen] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const validationErrors = validateLogin(values);
-    setErrors(validationErrors);
+    const nextErrors: Record<string, string> = {};
 
-    if (Object.keys(validationErrors).length > 0) {
-      return;
+    if (!email.trim()) {
+      nextErrors.email = "Email address is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      nextErrors.email = "Enter a valid email address.";
     }
 
+    if (!password) {
+      nextErrors.password = "Password is required.";
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) return;
+
     await onSubmit({
-      email: values.email.trim(),
-      password: values.password,
+      email: email.trim().toLowerCase(),
+      password,
+      rememberMe,
     });
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-700 focus:ring-4 focus:ring-teal-700/10";
+
   return (
     <>
-      <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="login-email">
-            Email address
+      <header className="mb-5">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+          Welcome back
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          Sign in to your account to continue.
+        </p>
+      </header>
+
+      <form onSubmit={handleSubmit} noValidate className="space-y-3">
+        <div>
+          <label
+            htmlFor="login-email"
+            className="mb-1.5 block text-sm font-medium text-slate-800"
+          >
+            Email
           </label>
 
-          <input
-            id="login-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={values.email}
-            onChange={(event) => {
-              const email = event.target.value;
-              setValues((current) => ({ ...current, email }));
-              setErrors((current) => ({ ...current, email: undefined }));
-            }}
-            aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? "login-email-error" : undefined}
-            className={styles.input}
-            placeholder="you@example.com"
-          />
+          <div className="relative">
+            <Mail
+              size={18}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+            />
+            <input
+              id="login-email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "login-email-error" : undefined}
+              className={`${inputClass} ${errors.email ? "border-red-500" : ""}`}
+            />
+          </div>
 
           {errors.email && (
-            <p id="login-email-error" className={styles.error}>
+            <p id="login-email-error" className="mt-1 text-xs text-red-600">
               {errors.email}
             </p>
           )}
         </div>
 
-        <div className={styles.field}>
-          <div className={styles.passwordHeader}>
-            <label className={styles.label} htmlFor="login-password">
-              Password
-            </label>
+        <div>
+          <label
+            htmlFor="login-password"
+            className="mb-1.5 block text-sm font-medium text-slate-800"
+          >
+            Password
+          </label>
 
-            <Link className={styles.forgotLink} to="/forgot-password">
-              Forgot password?
-            </Link>
+          <div className="relative">
+            <LockKeyhole
+              size={18}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+            />
+            <input
+              id="login-password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              aria-invalid={Boolean(errors.password)}
+              aria-describedby={
+                errors.password ? "login-password-error" : undefined
+              }
+              className={`${inputClass} pr-12 ${errors.password ? "border-red-500" : ""}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((visible) => !visible)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-500 hover:text-slate-900"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
-          <input
-            id="login-password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={values.password}
-            onChange={(event) => {
-              const password = event.target.value;
-              setValues((current) => ({ ...current, password }));
-              setErrors((current) => ({ ...current, password: undefined }));
-            }}
-            aria-invalid={Boolean(errors.password)}
-            aria-describedby={
-              errors.password ? "login-password-error" : undefined
-            }
-            className={styles.input}
-            placeholder="Enter your password"
-          />
-
           {errors.password && (
-            <p id="login-password-error" className={styles.error}>
+            <p id="login-password-error" className="mt-1 text-xs text-red-600">
               {errors.password}
             </p>
           )}
         </div>
 
+        <div className="flex items-center justify-between gap-3 py-1 text-sm">
+          <label className="flex cursor-pointer items-center gap-2 text-slate-600">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.target.checked)}
+              className="h-4 w-4 accent-teal-700"
+            />
+            Remember me
+          </label>
+
+          <Link
+            to="/forgot-password"
+            className="font-medium text-teal-800 hover:text-teal-950"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
         {error && (
-          <p role="alert" className={styles.error}>
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 p-3 text-sm text-red-700"
+          >
             {error}
           </p>
         )}
 
-        <Button
+        <button
           type="submit"
-          fullWidth
-          loading={isSubmitting}
           disabled={isSubmitting}
+          className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-teal-600 to-teal-800 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-800/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Sign In
-        </Button>
+          {isSubmitting ? "Signing in..." : "Sign in"}
+        </button>
+
+        <div className="flex items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-500">or</span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() =>
+            window.alert("Google sign-in will be available after integration.")
+          }
+          className="w-full cursor-pointer rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+        >
+          Continue with Google
+        </button>
       </form>
+
+      <Dialog open={demoAccountsOpen} onOpenChange={setDemoAccountsOpen}>
+        <Dialog.Trigger asChild>
+          <button
+            type="button"
+            className="mt-4 w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-teal-600 hover:text-teal-800"
+          >
+            Demo accounts
+          </button>
+        </Dialog.Trigger>
+        <Dialog.Content size="sm">
+          <Dialog.Header>
+            <Dialog.Title>Demo accounts</Dialog.Title>
+            <Dialog.Description>
+              Select an account to fill in its sign-in credentials.
+            </Dialog.Description>
+          </Dialog.Header>
+          <Dialog.Body className="space-y-2">
+            {demoAccounts.map((account) => (
+              <button
+                key={account.email}
+                type="button"
+                onClick={() => {
+                  setEmail(account.email);
+                  setPassword(account.password);
+                  setErrors({});
+                  setDemoAccountsOpen(false);
+                }}
+                className="flex w-full cursor-pointer items-start justify-between gap-3 rounded-lg border border-slate-200 p-3 text-left transition hover:border-teal-600 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+              >
+                <span className="pt-0.5 text-[10px] font-bold tracking-wide text-teal-800">
+                  {account.label}
+                </span>
+                <span className="text-right text-xs text-slate-600">
+                  <span className="block break-all font-mono">
+                    {account.email}
+                  </span>
+                  <span className="block font-mono">{account.password}</span>
+                </span>
+              </button>
+            ))}
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog>
+
+      <p className="mt-6 text-center text-sm text-slate-500">
+        New here?{" "}
+        <Link
+          to="/register"
+          className="font-medium text-teal-800 hover:text-teal-950"
+        >
+          Create an account
+        </Link>
+      </p>
     </>
   );
 };
