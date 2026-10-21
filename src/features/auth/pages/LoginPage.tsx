@@ -4,45 +4,55 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import LoginForm from "../components/LoginForm";
 import {
+  clearDemoSession,
   getRegisteredDemoUsers,
   hashDemoPassword,
   saveDemoSession,
   type DemoAccountRole,
+  type DemoSession,
 } from "../utils/demoAuth";
 
-const DEMO_ACCOUNTS = [
+const DEMO_ACCOUNTS: {
+  email: string;
+  password: string;
+  fullName: string;
+  role: DemoAccountRole;
+}[] = [
   {
     email: "admin@markethub.demo",
     password: "Admin@123",
     fullName: "MarketHub Admin",
-    role: "admin" as const,
-    storeName: "",
+    role: "admin",
   },
   {
     email: "vendor@markethub.demo",
     password: "Vendor@123",
     fullName: "Demo Vendor",
-    role: "vendor" as const,
-    storeName: "Demo Store",
+    role: "vendor",
   },
   {
     email: "customer@markethub.demo",
     password: "Customer@123",
     fullName: "Demo Customer",
-    role: "customer" as const,
-    storeName: "",
+    role: "customer",
   },
 ];
 
-type LoginLocationState = {
-  message?: string;
-  email?: string;
+interface LoginValues {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+interface LoginLocationState {
   from?: {
     pathname?: string;
     search?: string;
     hash?: string;
   };
-};
+  email?: string;
+  message?: string;
+}
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -52,24 +62,15 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   const locationState = location.state as LoginLocationState | null;
-
-  const registrationMessage = locationState?.message;
-  const registeredEmail = locationState?.email;
-
-  const requestedPath = locationState?.from?.pathname;
+  const requestedPath = locationState?.from;
 
   const redirectTo =
-    requestedPath &&
-    requestedPath.startsWith("/") &&
-    !requestedPath.startsWith("//")
-      ? `${requestedPath}${locationState?.from?.search ?? ""}${locationState?.from?.hash ?? ""}`
+    requestedPath?.pathname?.startsWith("/") &&
+    !requestedPath.pathname.startsWith("//")
+      ? `${requestedPath.pathname}${requestedPath.search ?? ""}${requestedPath.hash ?? ""}`
       : "/";
 
-  const handleLogin = async (values: {
-    email: string;
-    password: string;
-    rememberMe: boolean;
-  }) => {
+  const handleLogin = async (values: LoginValues) => {
     setIsSubmitting(true);
     setError("");
 
@@ -81,25 +82,21 @@ const LoginPage = () => {
           account.email === email && account.password === values.password,
       );
 
-      let session: {
-        email: string;
-        fullName: string;
-        role: DemoAccountRole;
-        storeName: string;
-      };
+      let session: DemoSession;
 
       if (demoAccount) {
         session = {
           email: demoAccount.email,
           fullName: demoAccount.fullName,
           role: demoAccount.role,
-          storeName: demoAccount.storeName,
+          storeName: "",
+          loggedInAt: new Date().toISOString(),
         };
       } else {
-        const users = getRegisteredDemoUsers();
+        const registeredUsers = getRegisteredDemoUsers();
 
-        const registeredUser = users.find(
-          (user) => user.email.toLowerCase() === email,
+        const registeredUser = registeredUsers.find(
+          (user) => user.email.trim().toLowerCase() === email,
         );
 
         if (!registeredUser) {
@@ -119,16 +116,12 @@ const LoginPage = () => {
           fullName: registeredUser.fullName,
           role: registeredUser.role,
           storeName: registeredUser.storeName,
+          loggedInAt: new Date().toISOString(),
         };
       }
 
-      saveDemoSession(
-        {
-          ...session,
-          loggedInAt: new Date().toISOString(),
-        },
-        values.rememberMe,
-      );
+      clearDemoSession();
+      saveDemoSession(session, values.rememberMe);
 
       navigate(redirectTo, { replace: true });
     } catch {
@@ -141,20 +134,11 @@ const LoginPage = () => {
   return (
     <>
       <AuthLayout fitViewport>
-        {registrationMessage && (
-          <p
-            role="status"
-            className="mb-4 rounded-lg bg-teal-50 p-3 text-sm text-teal-800"
-          >
-            {registrationMessage}
-          </p>
-        )}
-
         <LoginForm
           onSubmit={handleLogin}
           isSubmitting={isSubmitting}
           error={error}
-          initialEmail={registeredEmail ?? ""}
+          initialEmail={locationState?.email ?? ""}
         />
       </AuthLayout>
     </>

@@ -5,7 +5,9 @@ import NotFoundPage from "../components/feedback/NotFoundPage";
 import LoginPage from "../features/auth/pages/LoginPage";
 import RegisterPage from "../features/auth/pages/RegisterPage";
 import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
+
 import ProtectedRoute from "@/features/auth/components/ProtectedRoute";
+import RoleProtectedRoute from "@/features/auth/components/RoleProtectedRoute";
 
 import CartPage from "../features/cart/pages/CartPage";
 import HomePage from "../features/home/pages/HomePage";
@@ -36,7 +38,7 @@ const AppRouter = () => {
         <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
         <Route path={ROUTES.PRODUCT_DETAILS} element={<ProductDetailsPage />} />
 
-        {/* Protected marketplace pages */}
+        {/* Authenticated marketplace pages */}
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.CART} element={<CartPage />} />
@@ -45,6 +47,21 @@ const AppRouter = () => {
           <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
           <Route path={ROUTES.ORDERS_SUCCESS} element={<OrderSuccessPage />} />
           <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+        </Route>
+
+        {/* Admin-only pages */}
+        <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
+          {/* Add admin dashboard and management routes here */}
+        </Route>
+
+        {/* Vendor-only pages */}
+        <Route element={<RoleProtectedRoute allowedRoles={["vendor"]} />}>
+          {/* Add vendor dashboard and store management routes here */}
+        </Route>
+
+        {/* Customer-only pages */}
+        <Route element={<RoleProtectedRoute allowedRoles={["customer"]} />}>
+          {/* Add customer-specific routes here */}
         </Route>
       </Route>
 
