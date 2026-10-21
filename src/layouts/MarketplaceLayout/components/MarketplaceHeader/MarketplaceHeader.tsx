@@ -7,28 +7,14 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
+import {
+  clearDemoSession,
+  getDemoSession,
+  type DemoSession,
+} from "@/features/auth/utils/demoAuth";
 
 import MobileNavigation from "../MobileNavigation";
 import { marketplaceHeaderStyles } from "./MarketplaceHeader.styles";
-
-type DemoSession = {
-  email: string;
-  fullName?: string;
-  role: string;
-  storeName?: string;
-};
-
-const getCurrentSession = (): DemoSession | null => {
-  try {
-    const storedSession =
-      localStorage.getItem("markethub-demo-session") ??
-      sessionStorage.getItem("markethub-demo-session");
-
-    return storedSession ? (JSON.parse(storedSession) as DemoSession) : null;
-  } catch {
-    return null;
-  }
-};
 
 const MarketplaceHeader = () => {
   const navigate = useNavigate();
@@ -39,19 +25,25 @@ const MarketplaceHeader = () => {
   const [searchValue, setSearchValue] = useState("");
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [userSession, setUserSession] = useState<DemoSession | null>(
-    getCurrentSession,
+    getDemoSession,
   );
 
-  const accountMenuRef = useRef<HTMLDivElement>(null);
+  const mobileAccountMenuRef = useRef<HTMLDivElement>(null);
+  const desktopAccountMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!accountMenuOpen) return;
 
     const handlePointerDown = (event: PointerEvent) => {
-      if (
-        accountMenuRef.current &&
-        !accountMenuRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+      const insideMobileMenu =
+        mobileAccountMenuRef.current?.contains(target) ?? false;
+
+      const insideDesktopMenu =
+        desktopAccountMenuRef.current?.contains(target) ?? false;
+
+      if (!insideMobileMenu && !insideDesktopMenu) {
         setAccountMenuOpen(false);
       }
     };
@@ -88,8 +80,7 @@ const MarketplaceHeader = () => {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem("markethub-demo-session");
-    sessionStorage.removeItem("markethub-demo-session");
+    clearDemoSession();
 
     setUserSession(null);
     setAccountMenuOpen(false);
@@ -104,8 +95,10 @@ const MarketplaceHeader = () => {
     navigate("/login");
   };
 
-  const renderAccountMenu = () => (
-    <div className="relative" ref={accountMenuRef}>
+  const renderAccountMenu = (
+    menuRef: React.RefObject<HTMLDivElement | null>,
+  ) => (
+    <div className="relative" ref={menuRef}>
       <Button
         type="button"
         size="icon"
@@ -115,7 +108,7 @@ const MarketplaceHeader = () => {
         aria-haspopup="menu"
         className={marketplaceHeaderStyles.actionButton}
         onClick={() => {
-          setUserSession(getCurrentSession());
+          setUserSession(getDemoSession());
           setAccountMenuOpen((open) => !open);
         }}
       >
@@ -235,7 +228,7 @@ const MarketplaceHeader = () => {
               )}
             </Button>
 
-            {renderAccountMenu()}
+            {renderAccountMenu(mobileAccountMenuRef)}
 
             <ThemeToggle />
           </div>
@@ -305,7 +298,7 @@ const MarketplaceHeader = () => {
               )}
             </Button>
 
-            {renderAccountMenu()}
+            {renderAccountMenu(desktopAccountMenuRef)}
 
             <ThemeToggle />
           </div>
