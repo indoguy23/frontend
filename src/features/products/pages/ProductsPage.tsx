@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
@@ -34,11 +34,18 @@ const ProductsPage = () => {
 
   const [filters, setFilters] = useState<ProductFiltersState>(INITIAL_FILTERS);
 
+  const [draftFilters, setDraftFilters] =
+    useState<ProductFiltersState>(INITIAL_FILTERS);
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
 
   const searchTerm = searchParams.get("search")?.trim() ?? "";
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
@@ -109,7 +116,8 @@ const ProductsPage = () => {
     // Sorting
     switch (sortBy) {
       case "newest":
-        result.reverse();
+        // Mock data has no createdAt field yet.
+        // Keep the source order until actual dates are available.
         break;
 
       case "price-low-high":
@@ -148,7 +156,22 @@ const ProductsPage = () => {
   }, [filteredProducts, safeCurrentPage]);
 
   const handleFilterClick = () => {
+    setDraftFilters({ ...filters });
     setIsFilterOpen(true);
+  };
+
+  const handleDraftFiltersChange = (updatedFilters: ProductFiltersState) => {
+    setDraftFilters(updatedFilters);
+  };
+
+  const handleApplyFilters = () => {
+    setFilters(draftFilters);
+    setCurrentPage(1);
+    setIsFilterOpen(false);
+  };
+
+  const handleClearDraftFilters = () => {
+    setDraftFilters(INITIAL_FILTERS);
   };
 
   const handleFiltersChange = (updatedFilters: ProductFiltersState) => {
@@ -161,10 +184,7 @@ const ProductsPage = () => {
     setCurrentPage(1);
   };
 
-  const handleClearFilters = () => {
-    setFilters(INITIAL_FILTERS);
-    setCurrentPage(1);
-
+  const handleClearSearch = () => {
     if (searchParams.has("search")) {
       const updatedParams = new URLSearchParams(searchParams);
 
@@ -174,6 +194,13 @@ const ProductsPage = () => {
         replace: true,
       });
     }
+
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setFilters(INITIAL_FILTERS);
+    handleClearSearch();
   };
 
   return (
@@ -202,9 +229,9 @@ const ProductsPage = () => {
           {/* Desktop Filters */}
           <aside className="hidden lg:block">
             <ProductFilters
-              filters={filters}
-              onChange={handleFiltersChange}
-              onClear={handleClearFilters}
+              filters={draftFilters}
+              onChange={handleDraftFiltersChange}
+              onClear={handleClearDraftFilters}
             />
           </aside>
 
@@ -249,13 +276,13 @@ const ProductsPage = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={handleClearFilters}
+              onClick={handleClearDraftFilters}
             >
               Clear
             </Button>
 
-            <Button type="button" onClick={() => setIsFilterOpen(false)}>
-              Show {filteredProducts.length} products
+            <Button type="button" onClick={handleApplyFilters}>
+              Show products
             </Button>
           </Dialog.Footer>
         </Dialog.Content>
