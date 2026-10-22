@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
@@ -42,10 +42,6 @@ const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const searchTerm = searchParams.get("search")?.trim() ?? "";
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
 
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
