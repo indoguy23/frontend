@@ -31,14 +31,10 @@ const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [sortBy, setSortBy] = useState<ProductSortValue>("featured");
-
   const [filters, setFilters] = useState<ProductFiltersState>(INITIAL_FILTERS);
-
   const [draftFilters, setDraftFilters] =
     useState<ProductFiltersState>(INITIAL_FILTERS);
-
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const searchTerm = searchParams.get("search")?.trim() ?? "";
@@ -71,26 +67,22 @@ const ProductsPage = () => {
       );
     }
 
-    // Minimum Price
+    // Minimum price
     if (filters.minPrice !== "") {
       const minPrice = Number(filters.minPrice);
-
       result = result.filter((product) => product.price >= minPrice);
     }
 
-    // Maximum Price
+    // Maximum price
     if (filters.maxPrice !== "") {
       const maxPrice = Number(filters.maxPrice);
-
       result = result.filter((product) => product.price <= maxPrice);
     }
 
     // Rating
     if (filters.rating !== null) {
-      const minimumRating = filters.rating;
-
       result = result.filter(
-        (product) => (product.rating ?? 0) >= minimumRating,
+        (product) => (product.rating ?? 0) >= filters.rating!,
       );
     }
 
@@ -99,21 +91,17 @@ const ProductsPage = () => {
       result = result.filter((product) => {
         const isInStock = product.stock > 0;
 
-        const matchesInStock =
-          filters.availability.includes("in-stock") && isInStock;
-
-        const matchesOutOfStock =
-          filters.availability.includes("out-of-stock") && !isInStock;
-
-        return matchesInStock || matchesOutOfStock;
+        return (
+          (filters.availability.includes("in-stock") && isInStock) ||
+          (filters.availability.includes("out-of-stock") && !isInStock)
+        );
       });
     }
 
     // Sorting
     switch (sortBy) {
       case "newest":
-        // Mock data has no createdAt field yet.
-        // Keep the source order until actual dates are available.
+        // A createdAt field is required for true newest-first sorting.
         break;
 
       case "price-low-high":
@@ -146,13 +134,17 @@ const ProductsPage = () => {
   const paginatedProducts = useMemo(() => {
     const startIndex = (safeCurrentPage - 1) * PRODUCTS_PER_PAGE;
 
-    const endIndex = startIndex + PRODUCTS_PER_PAGE;
-
-    return filteredProducts.slice(startIndex, endIndex);
+    return filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
   }, [filteredProducts, safeCurrentPage]);
 
+  // Mobile and tablet filters use draft values until applied.
   const handleFilterClick = () => {
-    setDraftFilters({ ...filters });
+    setDraftFilters({
+      ...filters,
+      categories: [...filters.categories],
+      availability: [...filters.availability],
+    });
+
     setIsFilterOpen(true);
   };
 
@@ -161,17 +153,37 @@ const ProductsPage = () => {
   };
 
   const handleApplyFilters = () => {
-    setFilters(draftFilters);
+    setFilters({
+      ...draftFilters,
+      categories: [...draftFilters.categories],
+      availability: [...draftFilters.availability],
+    });
+
     setCurrentPage(1);
     setIsFilterOpen(false);
   };
 
   const handleClearDraftFilters = () => {
-    setDraftFilters(INITIAL_FILTERS);
+    setDraftFilters({
+      ...INITIAL_FILTERS,
+      categories: [],
+      availability: [],
+    });
   };
 
+  // Desktop filters apply immediately.
   const handleFiltersChange = (updatedFilters: ProductFiltersState) => {
     setFilters(updatedFilters);
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      ...INITIAL_FILTERS,
+      categories: [],
+      availability: [],
+    });
+
     setCurrentPage(1);
   };
 
@@ -181,21 +193,16 @@ const ProductsPage = () => {
   };
 
   const handleClearSearch = () => {
-    if (searchParams.has("search")) {
-      const updatedParams = new URLSearchParams(searchParams);
+    const updatedParams = new URLSearchParams(searchParams);
 
-      updatedParams.delete("search");
+    updatedParams.delete("search");
 
-      setSearchParams(updatedParams, {
-        replace: true,
-      });
-    }
-
+    setSearchParams(updatedParams, { replace: true });
     setCurrentPage(1);
   };
 
-  const handleClearFilters = () => {
-    setFilters(INITIAL_FILTERS);
+  const handleClearAll = () => {
+    handleClearFilters();
     handleClearSearch();
   };
 
@@ -222,12 +229,12 @@ const ProductsPage = () => {
         />
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-          {/* Desktop Filters */}
+          {/* Desktop filters */}
           <aside className="hidden lg:block">
             <ProductFilters
-              filters={draftFilters}
-              onChange={handleDraftFiltersChange}
-              onClear={handleClearDraftFilters}
+              filters={filters}
+              onChange={handleFiltersChange}
+              onClear={handleClearFilters}
             />
           </aside>
 
@@ -235,7 +242,7 @@ const ProductsPage = () => {
           <section className="min-w-0">
             <ProductsGrid
               products={paginatedProducts}
-              onClearFilters={handleClearFilters}
+              onClearFilters={handleClearAll}
             />
 
             <ProductsPagination
@@ -249,12 +256,11 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {/* Mobile / Tablet Filters */}
+      {/* Mobile and tablet filters */}
       <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <Dialog.Content size="md">
           <Dialog.Header>
             <Dialog.Title>Filter Products</Dialog.Title>
-
             <Dialog.Description>
               Narrow down products based on your preferences.
             </Dialog.Description>
@@ -262,9 +268,9 @@ const ProductsPage = () => {
 
           <Dialog.Body>
             <ProductFilters
-              filters={filters}
-              onChange={handleFiltersChange}
-              onClear={handleClearFilters}
+              filters={draftFilters}
+              onChange={handleDraftFiltersChange}
+              onClear={handleClearDraftFilters}
             />
           </Dialog.Body>
 
@@ -278,7 +284,7 @@ const ProductsPage = () => {
             </Button>
 
             <Button type="button" onClick={handleApplyFilters}>
-              Show products
+              Show {filteredProducts.length} products
             </Button>
           </Dialog.Footer>
         </Dialog.Content>
