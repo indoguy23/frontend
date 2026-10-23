@@ -29,7 +29,29 @@ const PRODUCTS_PER_PAGE = 6;
 
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchTerm = searchParams.get("search")?.trim() ?? "";
 
+  return (
+    <ProductsPageContent
+      key={searchTerm}
+      searchTerm={searchTerm}
+      searchParams={searchParams}
+      setSearchParams={setSearchParams}
+    />
+  );
+};
+
+type ProductsPageContentProps = {
+  searchTerm: string;
+  searchParams: URLSearchParams;
+  setSearchParams: ReturnType<typeof useSearchParams>[1];
+};
+
+const ProductsPageContent = ({
+  searchTerm,
+  searchParams,
+  setSearchParams,
+}: ProductsPageContentProps) => {
   const [sortBy, setSortBy] = useState<ProductSortValue>("featured");
   const [filters, setFilters] = useState<ProductFiltersState>(INITIAL_FILTERS);
   const [draftFilters, setDraftFilters] =
@@ -37,12 +59,9 @@ const ProductsPage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const searchTerm = searchParams.get("search")?.trim() ?? "";
-
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
 
-    // Search
     if (searchTerm) {
       const normalizedSearchTerm = searchTerm.toLowerCase();
 
@@ -60,33 +79,28 @@ const ProductsPage = () => {
       });
     }
 
-    // Category
     if (filters.categories.length > 0) {
       result = result.filter((product) =>
         filters.categories.includes(product.category),
       );
     }
 
-    // Minimum price
     if (filters.minPrice !== "") {
       const minPrice = Number(filters.minPrice);
       result = result.filter((product) => product.price >= minPrice);
     }
 
-    // Maximum price
     if (filters.maxPrice !== "") {
       const maxPrice = Number(filters.maxPrice);
       result = result.filter((product) => product.price <= maxPrice);
     }
 
-    // Rating
     if (filters.rating !== null) {
       result = result.filter(
         (product) => (product.rating ?? 0) >= filters.rating!,
       );
     }
 
-    // Availability
     if (filters.availability.length > 0) {
       result = result.filter((product) => {
         const isInStock = product.stock > 0;
@@ -98,10 +112,9 @@ const ProductsPage = () => {
       });
     }
 
-    // Sorting
     switch (sortBy) {
       case "newest":
-        // A createdAt field is required for true newest-first sorting.
+        // Add a createdAt field to products to support newest-first sorting.
         break;
 
       case "price-low-high":
@@ -128,7 +141,6 @@ const ProductsPage = () => {
   }, [filters, sortBy, searchTerm]);
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-
   const safeCurrentPage = Math.min(currentPage, Math.max(totalPages, 1));
 
   const paginatedProducts = useMemo(() => {
@@ -137,7 +149,6 @@ const ProductsPage = () => {
     return filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
   }, [filteredProducts, safeCurrentPage]);
 
-  // Mobile and tablet filters use draft values until applied.
   const handleFilterClick = () => {
     setDraftFilters({
       ...filters,
@@ -171,7 +182,6 @@ const ProductsPage = () => {
     });
   };
 
-  // Desktop filters apply immediately.
   const handleFiltersChange = (updatedFilters: ProductFiltersState) => {
     setFilters(updatedFilters);
     setCurrentPage(1);
@@ -194,11 +204,9 @@ const ProductsPage = () => {
 
   const handleClearSearch = () => {
     const updatedParams = new URLSearchParams(searchParams);
-
     updatedParams.delete("search");
 
     setSearchParams(updatedParams, { replace: true });
-    setCurrentPage(1);
   };
 
   const handleClearAll = () => {
@@ -229,7 +237,6 @@ const ProductsPage = () => {
         />
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-          {/* Desktop filters */}
           <aside className="hidden lg:block">
             <ProductFilters
               filters={filters}
@@ -238,7 +245,6 @@ const ProductsPage = () => {
             />
           </aside>
 
-          {/* Products */}
           <section className="min-w-0">
             <ProductsGrid
               products={paginatedProducts}
@@ -256,7 +262,6 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {/* Mobile and tablet filters */}
       <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <Dialog.Content size="md">
           <Dialog.Header>
