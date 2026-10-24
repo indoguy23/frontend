@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
@@ -10,6 +10,7 @@ import type { Order } from "../types/orders.types";
 
 const OrdersPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,16 +48,13 @@ const OrdersPage = () => {
     return () => {
       isActive = false;
     };
-  }, [retryCount]);
+  }, [retryCount, location.key]);
 
   const handleRetry = () => {
     setError("");
     setIsLoading(true);
     setRetryCount((count) => count + 1);
   };
-
-  // Keep your existing loading, error, empty and orders JSX here.
-  // Use handleRetry for the Try Again button.
 
   return (
     <main className="min-h-screen">

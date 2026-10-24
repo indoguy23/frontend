@@ -13,6 +13,7 @@ const OrderDetails = ({
   onBack,
   onTrackOrder,
   onCancelOrder,
+  isCancelling = false,
 }: OrderDetailsProps) => {
   const status = ORDER_STATUS_CONFIG[order.status];
 
@@ -22,8 +23,13 @@ const OrderDetails = ({
     <section className={styles.section}>
       <div className={styles.header}>
         <div>
-          <Button type="button" variant="ghost" onClick={onBack}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
+          <Button
+            type="button"
+            className="text-xs"
+            variant="ghost"
+            onClick={onBack}
+          >
+            <ArrowLeft className="h-4 w-4" />
             Back to Orders
           </Button>
 
@@ -186,9 +192,10 @@ const OrderDetails = ({
           <Button
             type="button"
             variant="outline"
+            disabled={isCancelling}
             onClick={() => onCancelOrder(order.orderId)}
           >
-            Cancel Order
+            {isCancelling ? "Cancelling..." : "Cancel Order"}
           </Button>
         </div>
       )}
