@@ -5,4 +5,5 @@ export interface OrderDetailsProps {
   onBack: () => void;
   onTrackOrder: () => void;
   onCancelOrder: (orderId: string) => void;
+  isCancelling?: boolean;
 }

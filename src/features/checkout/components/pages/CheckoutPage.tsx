@@ -93,12 +93,16 @@ const CheckoutPage = () => {
     setOrderError("");
 
     const payload = {
-      items: items.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
+      items: items.map(({ product, quantity }) => ({
+        productId: product.id,
+        productName: product.name,
+        productImage: product.image,
+        quantity,
+        price: product.price,
       })),
       address,
       paymentMethod,
+      totals,
     };
 
     try {
