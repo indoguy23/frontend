@@ -25,17 +25,9 @@ const StatusIcon = ({ step }: StatusIconProps) => {
 };
 
 const getIndicatorClassName = (state: OrderStatusStep["state"]) => {
-  if (state === "completed") {
-    return orderStatusTimelineStyles.completed;
-  }
-
-  if (state === "current") {
-    return orderStatusTimelineStyles.current;
-  }
-
-  if (state === "cancelled") {
-    return orderStatusTimelineStyles.cancelled;
-  }
+  if (state === "completed") return orderStatusTimelineStyles.completed;
+  if (state === "current") return orderStatusTimelineStyles.current;
+  if (state === "cancelled") return orderStatusTimelineStyles.cancelled;
 
   return orderStatusTimelineStyles.upcoming;
 };
@@ -49,7 +41,6 @@ const OrderStatusTimeline = ({
       <ol className={orderStatusTimelineStyles.list}>
         {steps.map((step, index) => {
           const isLast = index === steps.length - 1;
-
           const connectorCompleted = step.state === "completed";
 
           return (
